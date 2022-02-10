@@ -1,0 +1,9 @@
+title: str()
+page_type: enum("choice_question","ChoiceQuestion")
+content: str()
+correct_choices: list(str())
+choices: list(include('choice'))
+---
+choice:
+  choice_id: str()
+  choice_text: str()

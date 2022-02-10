@@ -1,0 +1,19 @@
+pages: list(page,required=True)
+shuffle: bool(required=False)
+num_of_show: int(min=1)
+---
+page:
+  title: str(required=True)
+  content: str(required=True)
+  page_type: str(required=True)
+  correct_answer: include('correct_answer')
+  correct_answers: list(include('correct_answer'))
+  choices: list(str())
+---
+correct_answer:
+  blank_id: str(required=True)
+  answers: list(include('answer'),required=True)
+---
+answer:
+  type: str(required=True)
+  value: str(required=True)

@@ -1,0 +1,9 @@
+title: str()
+page_type: enum("single_text_question","SingleTextQuestion")
+content: str()
+correct_answer: list(include('answer'))
+---
+answer:
+  type: str()
+  value: any(str(),num())
+  

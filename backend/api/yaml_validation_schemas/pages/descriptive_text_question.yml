@@ -1,0 +1,3 @@
+title: str()
+page_type: enum("descriptive_text_question","DescriptiveTextQuestion")
+content: str()
