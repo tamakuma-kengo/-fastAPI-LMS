@@ -13,6 +13,8 @@ class Course(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     course_name = Column(String(128), nullable=False, comment="このコースの名称.")
+    start_date_time = Column(DATETIME, nullable=False, comment="閲覧可能になる日時.")
+    end_date_time = Column(DATETIME, nullable=False, comment="閲覧が終了する日時")
     created = Column(DATETIME,default=datetime.datetime.now(), nullable=False)
 
 # コース解答の閲覧権限情報
