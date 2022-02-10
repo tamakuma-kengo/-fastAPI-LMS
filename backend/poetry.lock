@@ -565,7 +565,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "uvicorn"
-version = "0.17.0.post1"
+version = "0.17.4"
 description = "The lightning-fast ASGI server."
 category = "main"
 optional = false
@@ -615,10 +615,21 @@ category = "main"
 optional = false
 python-versions = ">=3.7"
 
+[[package]]
+name = "yamale"
+version = "4.0.2"
+description = "A schema and validator for YAML."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+pyyaml = "*"
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d886187d1a89d472976fd0f915714b9e67a1a04587610e9dabe6039db1e9ae40"
+content-hash = "9330a2aadc9dd6872f5017909b6fe8ef5564ae42b1b4071d8ba831d4c86f97b4"
 
 [metadata.files]
 aiomysql = [
@@ -1059,8 +1070,8 @@ typing-extensions = [
     {file = "typing_extensions-4.0.1.tar.gz", hash = "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e"},
 ]
 uvicorn = [
-    {file = "uvicorn-0.17.0.post1-py3-none-any.whl", hash = "sha256:fa166e6c3d58e23ff5a1a3543b079c7b28aa057ab1388201e4b34a49ec05da72"},
-    {file = "uvicorn-0.17.0.post1.tar.gz", hash = "sha256:60a149248181920a73b2e97aec1dacec5501618867f041a228b2519d91a62a91"},
+    {file = "uvicorn-0.17.4-py3-none-any.whl", hash = "sha256:e85872d84fb651cccc4c5d2a71cf7ead055b8fb4d8f1e78e36092282c0cf2aec"},
+    {file = "uvicorn-0.17.4.tar.gz", hash = "sha256:25850bbc86195a71a6477b3e4b3b7b4c861fb687fb96912972ce5324472b1011"},
 ]
 uvloop = [
     {file = "uvloop-0.16.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:6224f1401025b748ffecb7a6e2652b17768f30b1a6a3f7b44660e5b5b690b12d"},
@@ -1133,4 +1144,8 @@ websockets = [
     {file = "websockets-10.1-pp37-pypy37_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_12_x86_64.manylinux2010_x86_64.whl", hash = "sha256:816ae7dac2c6522cfa620947ead0ca95ac654916eebf515c94d7c28de5601a6e"},
     {file = "websockets-10.1-pp37-pypy37_pp73-win_amd64.whl", hash = "sha256:1dafe98698ece09b8ccba81b910643ff37198e43521d977be76caf37709cf62b"},
     {file = "websockets-10.1.tar.gz", hash = "sha256:181d2b25de5a437b36aefedaf006ecb6fa3aa1328ec0236cdde15f32f9d3ff6d"},
+]
+yamale = [
+    {file = "yamale-4.0.2-py3-none-any.whl", hash = "sha256:619967952d419335b84c58cdcb3bc5976d0bf3d7ec3e93c173fe15fc81f7edce"},
+    {file = "yamale-4.0.2.tar.gz", hash = "sha256:4168f8b3650cece80552fd32edd894ab9081dd9ef959cadd9f1f23795629e4f2"},
 ]
