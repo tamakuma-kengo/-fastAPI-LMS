@@ -30,3 +30,19 @@ class UserKind(BaseModel):
 class UserKindCreate(BaseModel):
     kind_name: str
     create: bool
+
+class HomeUserProfile(BaseModel):
+    username: str
+    email: str
+    kind_name: str
+    create: bool
+    is_active: bool
+
+class UserWithGrant:
+    id:int
+    username: str
+    email: str
+    created: datetime
+    is_active: bool
+    kind_name: str
+    create: bool
