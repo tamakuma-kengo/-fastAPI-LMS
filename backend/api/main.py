@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from api.routers import task, done, auth
+from api.routers import task, done, auth, user, course
 from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 origins = [
     "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://localhost"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -18,3 +20,7 @@ app.add_middleware(
 app.include_router(task.router)
 app.include_router(done.router)
 app.include_router(auth.router)
+app.include_router(user.router)
+app.include_router(course.router)
+
+
