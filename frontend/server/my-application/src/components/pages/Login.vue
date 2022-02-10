@@ -37,17 +37,25 @@ export default {
         console.log(this.email,this.password)
         const config = {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
         };
-        const params = new URLSearchParams();
-        params.append('username', this.email);    // 渡したいデータ分だけappendする
-        params.append('password', this.password);
+        const params = {email: this.email,password: this.password}
+        // const params = new URLSearchParams();
+        // params.append("email", this.email); 
+        // params.append("password", this.password);
+        let self = this
         axios
-          .post("http://localhost:8000/token", params, config)
+          .post("http://127.0.0.1:8000/token", params, config)
           .then(
             function(responce){
               console.log(responce)
+              self.$router.push({name:'Home'})
+            }
+          ).catch(
+            function(error){
+              console.log(error)
             }
           )
       },
