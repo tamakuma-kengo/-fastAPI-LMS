@@ -4,11 +4,19 @@ import VueRouter from "vue-router";
 import Top from "../components/pages/Top.vue";
 import Login from "../components/pages/Login.vue";
 import Signup from "../components/pages/Signup.vue";
+import Home from "../components/pages/Home.vue";
+import RegisterCourse from "../components/pages/RegisterCourse.vue";
+import Uploads from "../components/pages/Uploads.vue";
 
 
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/Uploads",
+    name: "Uploads",
+    component: Uploads,
+  },
   {
     path: "/",
     name: "Root",
@@ -30,13 +38,18 @@ const routes = [
   },
   {
     path: "/Home",
-    name: "Home"
-    // component: Home,
+    name: "Home",
+    component: Home,
   },
   {
     path: "/Course",
     name: "Course"
     // component: Course
+  },
+  {
+    path: "/RegisterCourse",
+    name: "RegisterCourse",
+    component: RegisterCourse,
   }
 ];
 
