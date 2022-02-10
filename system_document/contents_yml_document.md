@@ -3,7 +3,6 @@
 ## Course
 ### Arguments
 ContentかList\<Block>のいずれかを指定する
-- title \<str> (Require)
 - content: \<Content>
 - blocks: \<List<\<Block>>
 
@@ -37,10 +36,10 @@ ContentかList\<Block>のいずれかを指定する
 
 ## FlowRules
 ### Arguments
-- check_answer_timing: ["None","submit_page","end_of_flow"]
+- check_answer_timing: ["none","submit_page","end_of_flow"]
     - 答え合わせをするタイミング
     - デフォルトは"submit_page"
-    - "None": 答え合わせをしない
+    - "none": 答え合わせをしない
     - "submit_page": ページにある"Submit"ボタンを押すと解答を表示
     - "end_of_flow": フローの最終ページで答えを表示
 - challenge_limit: int
@@ -74,13 +73,13 @@ ContentかList\<Block>のいずれかを指定する
 - ページを意味する親クラス. 子クラスには, [Page, Question] がある.
 -  Flow -> PageGroup内にリストで指定する. 
 ### Arguments
-- title: \<String>
-- content: \<Content>
-- page_type: \<String>
+- title: \<String> (Require)
+- content: \<Content> (Require)
+- page_type: \<String> (Require)
 
 ## Page.Page
 ### Arguments
-- page_type:\<String> = "page"
+- page_type:\<String> = "Page"
 
 ## Page.Question
 - Pageの子クラスであり, 問題を提供する. 
@@ -90,27 +89,28 @@ ContentかList\<Block>のいずれかを指定する
 
 ## CorrectAnswer
 ### Arguments
-- blank_id: \<str>
+- blank_id: \<str> (Require)
     - 解答欄のid, 同じPage内でUnique
-- answers: \<List\<Answer>>
+- answers: \<List\<Answer>> (Require)
     - 正答のリスト. 
 
 ## Answer
 ### Arguments
-- type: \<str>
+- type: \<str> (Require)
     - 回答の型. 型はpython準拠. 
-- value: \<str>
+- value: \<str> (Require)
     - 正答の値
 
 ## Page.Question.SigleTextQuestion
 ### Arguments
 - page_type:\<String> = "SingleTextQuestion"
-- correct_answer: \<CorrectAnswer>
-    - 問題の正答を記述する. 
+- correct_answer: \<List\<Answer>>
 
 ## Page.Question.MultipleTextQuestion
 ### Arguments
 - page_type:\<String> = "MultipleTextQuestion"
+- answer_column: \<Content>
+    - 解答欄の内容を記述する. 解答欄は'[[blank_id]]'で記述する. 
 - correct_answers: \<List\<CorrectAnswer>>
     - 問題の正答を記述する. 
 
@@ -121,5 +121,11 @@ ContentかList\<Block>のいずれかを指定する
 ## Page.Question.ChoiceQuestion
 ### Arguments
 - page_type:\<String> = "ChoiceQuestion"
-- correct_answer: \<CorrectAnswer>
-    - 問題の正答を記述する. 
+- choices: \<List\<Choice>> 
+- correct_choices: \<List\<String>>
+    - 問題の正答をchoice_idで記述する. 
+
+## Choice
+### Arguments
+- choice_id: \<String> (Require)
+- choice_text: \<String> (Require)

@@ -1,7 +1,5 @@
 # APIルーティング
 
-
-
 # DB構成
 ## Users
 - id: int \<primary_key>

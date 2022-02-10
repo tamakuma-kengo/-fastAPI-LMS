@@ -95,19 +95,19 @@
 - フローの終了画面. フローidを引数に取る. 
 <br><br>
 
-## route('/Analytics/)
+## route('/Analysis/)
 ***
 ### 概要
 - 分析画面のトップ
 <br><br>
 
-## route('/Analytics/{$course_id})
+## route('/Analysis/{$course_id})
 ***
 ### 概要
 - コースの分析結果を表示する. 
 <br><br>
 
-## route('/Analytics/{$course_id}/{$flow_id})
+## route('/Analysis/{$course_id}/{$flow_id})
 ***
 ### 概要
 - フローの分析結果を表示する. 
