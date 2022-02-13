@@ -5,13 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import asyncio
 from sqlalchemy.orm import sessionmaker
 
-from api.models.task import Base as TaskBase
 from api.models.user import Base as UserBase, User
 from api.models.content import Base as ContentBase
 from api.models.course import Base as CourseBase
 from api.models.block import Base as BlockBase
 from api.models.flow import Base as FlowBase
-from api.models.flow_group import Base as GroupBase
+from api.models.page_group import Base as PageGroupBase
 from api.models.flow_page import Base as PageBase
 from api.models.flow_session import Base as FlowSessionBase
 
@@ -21,8 +20,6 @@ DB_URL = "mysql+pymysql://root@db:3306/demo?charset=utf8"
 engine = create_engine(DB_URL, echo=True)
 
 def reset_database():
-    TaskBase.metadata.drop_all(bind=engine)
-    TaskBase.metadata.create_all(bind=engine)
     UserBase.metadata.drop_all(bind=engine)
     UserBase.metadata.create_all(bind=engine)
     ContentBase.metadata.drop_all(bind=engine)
@@ -33,21 +30,20 @@ def reset_database():
     BlockBase.metadata.create_all(bind=engine)
     FlowBase.metadata.drop_all(bind=engine)
     FlowBase.metadata.create_all(bind=engine)
-    GroupBase.metadata.drop_all(bind=engine)
-    GroupBase.metadata.create_all(bind=engine)
+    PageGroupBase.metadata.drop_all(bind=engine)
+    PageGroupBase.metadata.create_all(bind=engine)
     PageBase.metadata.drop_all(bind=engine)
     PageBase.metadata.create_all(bind=engine)
     FlowSessionBase.metadata.drop_all(bind=engine)
     FlowSessionBase.metadata.create_all(bind=engine)
 
 def drop_database():
-    TaskBase.metadata.drop_all(bind=engine)
     UserBase.metadata.drop_all(bind=engine)
     ContentBase.metadata.drop_all(bind=engine)
     CourseBase.metadata.drop_all(bind=engine)
     BlockBase.metadata.drop_all(bind=engine)
     FlowBase.metadata.drop_all(bind=engine)
-    GroupBase.metadata.drop_all(bind=engine)
+    PageGroupBase.metadata.drop_all(bind=engine)
     PageBase.metadata.drop_all(bind=engine)
     FlowSessionBase.metadata.drop_all(bind=engine)
 
