@@ -1,28 +1,31 @@
-from audioop import add
 from fastapi import  Depends,HTTPException,status
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
-from sqlalchemy import select, insert
 from typing import List, Optional, Tuple
 import datetime
 
-
-from api.schemas.user import HomeUserProfile, User, UserCreate, UserWithGrant
+from api.schemas.user import UserWithGrant
 import api.models.course as course_model
 import api.models.content as content_model
 import api.models.block as block_model
+import api.models.flow as flow_model
+import api.models.page_group as page_group_model
+import api.models.flow_page as flow_page_model
+
 
 import api.schemas.content as content_schema
 import api.schemas.block as block_schema
-from api.cruds.user import get_home_profile
 import api.schemas.course as course_schema
-from api.db import get_db
+import api.schemas.flow as flow_schema
+import api.schemas.page_group as page_group_schema
+import api.schemas.flowpage as flow_page_schema
 
 import yamale
 import yaml
 import traceback
 import re
+import uuid
 
 class YamlFormatter():
     def __init__(self,files:List[course_schema.RegisterCourseRequest]):
@@ -251,7 +254,7 @@ async def add_flow_grant(db: AsyncSession,flow_id, user_id):
     return
 
 async def add_flow_rule(db: AsyncSession,flow_id, rules=None):
-    new_flow_rule = flow_schema.FlowRule(flow_id=flow_id)
+    new_flow_rule = flow_schema.FlowRuleCreate(flow_id=flow_id)
     if rules != None:
         if "check_answer_timing" in rules:
             new_flow_rule.check_answer_timing = rules["check_answer_timing"]
@@ -275,7 +278,130 @@ async def add_flow_rule(db: AsyncSession,flow_id, rules=None):
     db.add(row)
     return
 
-# async def add_flow_group(db: AsyncSession, flow_id,order,)
+async def add_page_groups(db: AsyncSession, flow_id: int, order: int, page_group: dict):
+    new_page_groups = page_group_schema.PageGroupCreate(flow_id=flow_id, order=order)
+    if "shuffle" in page_group:
+        new_page_groups.shuffle = page_group["shuffle"]
+    if "num_of_show" in page_group:
+        new_page_groups.num_of_show = page_group["num_of_show"]
+    row = page_group_model.PageGroup(**new_page_groups.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    return row.id
+
+async def add_blank(db: AsyncSession, flowpage_id: int, blank_id: str):
+    new_blank = flow_page_schema.BlankCreate(id=blank_id, flowpage_id=flowpage_id)
+    row = flow_page_model.Blank(**new_blank.dict())
+    db.add(row)
+    return
+
+async def add_correct_answer(db: AsyncSession, flowpage_id: int, blank_id: int, correct_answer: dict):
+    new_correct_answer = flow_page_schema.CorrectAnswerCreate(flowpage_id=flowpage_id, blank_id=blank_id, type=correct_answer["type"], value=correct_answer["value"])
+    row = flow_page_model.CorrectAnswer(**new_correct_answer.dict())
+    db.add(row)
+    return
+
+async def add_simple_page(db: AsyncSession, content_id: int, flow_page: dict):
+    # フローページを追加
+    new_simple_page = flow_page_schema.PageCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    row = flow_page_model.Page(**new_simple_page.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    return row.id
+
+async def add_single_text_question(db: AsyncSession, content_id: int, flow_page: dict):
+    # フローページを追加
+    new_single_text_question = flow_page_schema.SingleTextQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    row = flow_page_model.SingleTextQuestion(**new_single_text_question.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    flowpage_id = row.id
+
+    # 回答欄と正答の情報を追加
+    blank_id = "blank_"+ str(uuid.uuid4())
+    await add_blank(db=db, blank_id=blank_id, flowpage_id=flowpage_id)
+    for correct_answer in flow_page["correct_answer"]:
+        await add_correct_answer(db=db, flowpage_id=flowpage_id, blank_id=blank_id, correct_answer=correct_answer)
+    return flowpage_id
+
+async def add_multiple_text_question(db: AsyncSession, content_id: int, flow_page: dict):
+    # フローページを追加
+    new_multiple_text_question = flow_page_schema.MultipleTextQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    row = flow_page_model.MultipleTextQuestion(**new_multiple_text_question.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    flowpage_id = row.id
+    
+    # 回答欄と正答の情報を追加
+    for correct_answer in flow_page["correct_answers"]:
+        blank_id = correct_answer["blank_id"]
+        await add_blank(db=db, blank_id=blank_id, flowpage_id=flowpage_id)
+        for answer in correct_answer["answers"]:
+            await add_correct_answer(db=db, flowpage_id=flowpage_id, blank_id=blank_id, correct_answer=answer)
+    return flowpage_id
+
+async def add_descriptive_text_question(db: AsyncSession, content_id: int, flow_page: dict):
+    # フローページを追加
+    new_descriptive_text_question = flow_page_schema.DescriptiveTextQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    row = flow_page_model.DescriptiveTextQuestion(**new_descriptive_text_question.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    return row.id
+
+async def add_choice_question_choices(db: AsyncSession, flowpage_id: int, order: int, choice: dict):
+    content_id = await add_content(db=db, content=choice["choice_text"])
+    new_choice_question_choices = flow_page_schema.ChoiceQuestionChoicesCreate(id=choice["choice_id"], flowpage_id=flowpage_id, order=order, content_id=content_id)
+    row = flow_page_model.ChoiceQuestionChoice(**new_choice_question_choices.dict())
+    db.add(row)
+    return
+
+async def add_choice_question(db: AsyncSession, content_id: int, flow_page: dict):
+    # フローページを追加
+    new_choice_question = flow_page_schema.ChoiceQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    row = flow_page_model.ChoiceQuestion(**new_choice_question.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    flowpage_id = row.id
+
+    # 選択肢情報の追加
+    blank_id = "blank_"+ str(uuid.uuid4())  # 仮のblank_idを生成
+    await add_blank(db=db, blank_id=blank_id, flowpage_id=flowpage_id)
+    for choice_i, choice in enumerate(flow_page["choices"]):
+        await add_choice_question_choices(db=db, flowpage_id=flowpage_id, order=choice_i, choice=choice)
+    
+    # 正答情報の追加
+    for correct_choice_id in flow_page["correct_choices"]:
+        correct_answer = {"type": "str", "value": correct_choice_id}
+        await add_correct_answer(db=db, flowpage_id=flowpage_id, blank_id=blank_id, correct_answer=correct_answer)
+    return flowpage_id
+
+async def add_flow_page(db: AsyncSession, flow_page: dict):
+    content_id = await add_content(db, flow_page["content"])
+    page_type = flow_page["page_type"]
+    if page_type in ["page","Page"]:
+        return await add_simple_page(db=db, content_id=content_id, flow_page=flow_page)
+    if page_type in ["single_text_question","SingleTextQuestion"]:
+        return await add_single_text_question(db=db, content_id=content_id, flow_page=flow_page)
+    if page_type in ["multiple_text_question","MultipleTextQuestion"]:
+        return await add_multiple_text_question(db=db, content_id=content_id, flow_page=flow_page)
+    if page_type in ["descriptive_text_question","DescriptiveTextQuestion"]:
+        return await add_descriptive_text_question(db=db, content_id=content_id, flow_page=flow_page)
+    if page_type in ["choice_question","ChoiceQuestion"]:
+        return await add_choice_question(db=db, content_id=content_id, flow_page=flow_page)
+    else:
+        raise ValueError(f"page_type {page_type} is not defined.")
+
+async def add_page_group_flow_pages(db: AsyncSession, page_group_id: int, flowpage_id: int, order: int):
+    new_page_gruop_flowpages = page_group_schema.PageGroupFlowPagesCreate(pagegroup_id=page_group_id, flowpage_id=flowpage_id, order=order)
+    row = page_group_model.PageGroupFlowPages(**new_page_gruop_flowpages.dict())
+    db.add(row)
+    return
 
 async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list) -> course_schema.RegisterCourseResponse:
     # コースの追加
@@ -303,11 +429,21 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
     # フローの追加
     for flow in flow_yml_list:
         flow_id = await add_flow(db,registered_course.id,flow)
+        print(f"flow_id: {flow_id}")
         await add_flow_grant(db,flow_id,user_with_grant.id)
         if "rules" in flow:
             await add_flow_rule(db,flow_id,flow["rules"])
         else:
             await add_flow_rule(db,flow_id)
+        for page_group_i, page_group in enumerate(flow["page_groups"]):
+            page_group_id = await add_page_groups(db=db, flow_id=flow_id, order=page_group_i, page_group=page_group)
+            print(f"page_group_id: {page_group_id}")
+
+            # ページの追加
+            for page_i, page in enumerate(page_group["pages"]):
+                flowpage_id = await add_flow_page(db=db, flow_page=page)
+                # フローグループとページの対応情報を追加
+                await add_page_group_flow_pages(db=db, page_group_id=page_group_id, flowpage_id=flowpage_id, order=page_i)
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}
