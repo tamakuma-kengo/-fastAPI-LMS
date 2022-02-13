@@ -81,16 +81,16 @@
 - end_read_date_time: datetime
 - always: boolean
 
-## FlowGroup
+## PageGroup
 - id: int \<primary_key>
 - flow_id: int \<foreign_key\<Flows.id>>
 - order: int \<notnull>
 - shuffle: Boolean
 - num_of_show: int
 
-## FlowGroupFlowPages
-\<primary_key= flowgroup_id, flowpage_id>
-- flowgroup_id: int \<foreign_key\<FlowGroup.id>>
+## PageGroupFlowPages
+\<primary_key= pagegroup_id, flowpage_id>
+- pagegroup_id: int \<foreign_key\<PageGroup.id>>
 - flowpage_id: int \<foreign_key\<FlowPage.id>>
 
 ## FlowPage
