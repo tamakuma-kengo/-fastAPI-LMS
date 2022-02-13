@@ -1,6 +1,6 @@
 
 # フローセッション(フローを利用する一連の流れ)を示すテーブル群
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, DATETIME, TEXT
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, DATETIME, TEXT, String
 from sqlalchemy.orm import relationship
 
 from datetime import datetime
@@ -33,7 +33,7 @@ class FlowSessionBlankAnswer(Base):
 
     flow_session_id = Column(Integer, ForeignKey("flow_sessions.id"), primary_key=True)
     flowpage_id = Column(Integer, ForeignKey("flowpages.id"), primary_key=True)
-    blank_id = Column(Integer, ForeignKey("blanks.id"), primary_key=True)
+    blank_id = Column(String(256), ForeignKey("blanks.id"), primary_key=True)
     answer = Column(TEXT, comment="ユーザが回答した内容. ")
     created = Column(DATETIME,default=datetime.now(), nullable=False, comment="回答日時")
     

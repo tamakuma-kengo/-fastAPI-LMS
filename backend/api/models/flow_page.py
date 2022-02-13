@@ -43,7 +43,7 @@ class SingleTextQuestion(Question):
     question = relationship("Question")
 
 # 複数解答の問題を持つページ
-class MultipleTextQuestions(Question):
+class MultipleTextQuestion(Question):
     __tablename__ = "multiple_text_questions"
 
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
@@ -71,8 +71,8 @@ class ChoiceQuestion(Question):
 class ChoiceQuestionChoice(Base):
     __tablename__ = "choice_question_choices"
 
-    id = Column(Integer, primary_key=True, index=True)
-    choice_question_id = Column(Integer, ForeignKey("choice_questions.id"), nullable=False)
+    id = Column(String(256), primary_key=True)
+    flowpage_id = Column(Integer, ForeignKey("choice_questions.id"), primary_key=True)
     order = Column(Integer, nullable=False, comment="選択肢内での表示順序. 小さいものから順に表示される. 同じページ内で一意.")
     content_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
 
@@ -82,8 +82,8 @@ class ChoiceQuestionChoice(Base):
 class Blank(Base):
     __tablename__ = "blanks"
 
-    id = Column(Integer, primary_key=True, index=True)
-    flowpage_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
+    id = Column(String(256), primary_key=True)
+    flowpage_id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
 
     question = relationship("Question", back_populates="blank")
 
@@ -93,8 +93,6 @@ class CorrectAnswer(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     flowpage_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
-    blank_id = Column(Integer, ForeignKey("blanks.id"), nullable=False)
+    blank_id = Column(String(256), ForeignKey("blanks.id"), nullable=False)
     type = Column(String(32), nullable=False, comment="問題の型. ")
     value = Column(String(256), nullable=False, comment="問題の正答. ")
-
-    blank = relationship("Blank")
