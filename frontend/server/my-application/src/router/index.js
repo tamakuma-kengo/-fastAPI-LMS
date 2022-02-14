@@ -7,6 +7,8 @@ import Signup from "../components/pages/Signup.vue";
 import Home from "../components/pages/Home.vue";
 import RegisterCourse from "../components/pages/RegisterCourse.vue";
 import Uploads from "../components/pages/Uploads.vue";
+import Course from "../components/pages/Course.vue";
+
 
 
 Vue.use(VueRouter);
@@ -42,9 +44,10 @@ const routes = [
     component: Home,
   },
   {
-    path: "/Course",
-    name: "Course"
-    // component: Course
+    path: "/Course/:course_id",
+    name: "Course",
+    component: Course,
+    props: true
   },
   {
     path: "/RegisterCourse",
