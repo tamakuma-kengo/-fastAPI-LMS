@@ -20,6 +20,8 @@ export default {
   
   name: "Login",
   data: () => ({
+      email: "yanagi@yanagi.com",
+      password: "yanagiyanagi",
       email_rules: [
         value => !!value || 'Required.',
         // value => (value || '').length <= 20 || 'Max 20 characters',
@@ -47,7 +49,7 @@ export default {
         // params.append("password", this.password);
         let self = this
         axios
-          .post("http://127.0.0.1:8000/token", params, config)
+          .post("/api/token", params, config)
           .then(
             function(responce){
               console.log(responce)

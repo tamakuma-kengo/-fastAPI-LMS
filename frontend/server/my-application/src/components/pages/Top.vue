@@ -38,7 +38,7 @@ export default {
       this.$router.push({name:'Signup'})
     },
     set_cookie(){
-      axios.get("http://127.0.0.1:8000/set_cookie",{withCredentials: true})
+      axios.get("/api/set_cookie",{withCredentials: true})
       .then(
         function(responce){
           console.log(responce)
@@ -46,7 +46,7 @@ export default {
       )
     },
     get_cookie(){
-      axios.get('http://127.0.0.1:8000/get_cookie',{withCredentials: true})
+      axios.get('/api/get_cookie',{withCredentials: true})
       .then(
         function(responce){
           console.log(responce)

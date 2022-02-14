@@ -1,8 +1,6 @@
 <template>
     <v-container v-if="isCreater">
         <h2>Register New Course</h2>
-{{this.files}}
-{{this.test_text}}
         <v-row align="center" justify="space-around" >
             <v-text-field :rules="titleRules" label="course name" v-model="courseName"></v-text-field>
         </v-row>
@@ -21,6 +19,9 @@
             <v-btn depressed color="primary" @click="register_course()" value="POST">
                 Register
             </v-btn>
+        </v-row>
+        <v-row align="center" justify="space-around" >
+            {{this.error_msgs}}
         </v-row>
     </v-container>
 </template>
@@ -66,6 +67,7 @@ export default {
       v => !!v || 'end time is required',
     ],
     files: [],
+    error_msgs: "",
     test_text: "",
     startDate: "",
     startTime: "",
@@ -75,12 +77,23 @@ export default {
   }),
   methods:{
       register_course(){
-        const output = {"course_name":"サンプルコース1","start_date_time": "2022-2-10T00:00:00","end_date_time":"2022-05-10T23:59:59","course_files": this.files}
-        // console.log(JSON.stringify(this.files));
-        console.log(JSON.stringify(output))
-        axios.post('http://127.0.0.1:8000/register_course',{files: this.files})
+        const params = {"course_name":"サンプルコース1","start_date_time": "2022-2-10T00:00:00","end_date_time":"2022-05-10T23:59:59","course_files": this.files}
+        console.log(JSON.stringify(params));
+        const config = {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        };
+        let self = this
+        axios.post('/api/register_course', params, config)
         .then(function(response){
-          console.log(response)
+          console.log(response.data)
+          if (response.data.success){
+            self.$router.push({name:'Course', params: {course_id: response.data.registered_course.id}})
+          }else{
+            self.error_msgs = response.data.error_msg
+          }
         })
       },
       onFileChange(fileObjects) {
