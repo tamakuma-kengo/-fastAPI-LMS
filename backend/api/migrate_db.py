@@ -58,8 +58,5 @@ def add_rows():
 if __name__ == "__main__":
     reset_database()
     # drop_database()
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(add_rows())
     add_rows()
-    # print(dir(engine))
     
