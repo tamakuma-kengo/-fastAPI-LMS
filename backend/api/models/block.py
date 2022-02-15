@@ -21,4 +21,4 @@ class BlockRule(Base):
     block_id = Column(Integer, ForeignKey("blocks.id"), primary_key=True)
     start_date_time = Column(DATETIME, comment="Blockの表示を開始する日時")
     end_date_time = Column(DATETIME, comment="Blockの表示を終了する日時")
-    always = Column(Boolean, default=True, comment="このBlockを常に表示するか.")
+    always = Column(Boolean, default=True, comment="このBlockを常に表示するか.", nullable=False)

@@ -64,8 +64,8 @@ class TakingCourseResponse(BaseModel):
 
 # コース画面を取得するためのレスポンス
 class BlockRuleResponse(BaseModel):
-    start_date_time: datetime
-    end_date_time: datetime
+    start_date_time: Optional[datetime]
+    end_date_time: Optional[datetime]
     always: bool
 
 class BlockResponse(BaseModel):
@@ -76,4 +76,4 @@ class BlockResponse(BaseModel):
 class CourseResponse(BaseModel):
     course_id: int
     course_name: str
-    blocks: List[BlockRuleResponse]
+    blocks: List[BlockResponse]
