@@ -18,7 +18,7 @@ ContentかList\<Block>のいずれかを指定する
     - Blockの表示を開始する日時
 - end_date_time: \<yyyy/mm/dd_hh/MM/dd>
     - Blockの表示を終了する日時
-- always: \<Boolean>
+- always: \<Boolean> (Require)
     - このBlockを常に表示するか. デフォルトはTrue. start_date_timeかend_date_timeが指定されるとこの値は無視される. 
 
 
