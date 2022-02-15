@@ -28,4 +28,5 @@ def add_blank(db:AsyncSession):
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

@@ -73,3 +73,4 @@ def add_content(db:AsyncSession):
         ]
     for row in rows:
         db.add(row)
+    db.flush()

@@ -11,12 +11,13 @@ def add_flow_rules(db:AsyncSession):
                 challenge_limit = None,
                 restart_session = True,
                 time_limit = None,
-                start_date_Time = datetime.datetime(2022,2,10,0,0,0),
+                start_date_time = datetime.datetime(2022,2,10,0,0,0),
                 end_answer_date_time = datetime.datetime(2023,2,10,0,0,0),
-                end_read_date_Time = datetime.datetime(2023,2,10,0,0,0),
+                end_read_date_time = datetime.datetime(2023,2,10,0,0,0),
                 always = True
             ),
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

@@ -68,4 +68,4 @@ def add_user(db:AsyncSession):
     ]
     for student in students:
         db.add(student)
-        
+    db.flush()

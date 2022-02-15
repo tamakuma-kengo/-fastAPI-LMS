@@ -32,4 +32,5 @@ def add_choice_question_choice(db:AsyncSession):
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

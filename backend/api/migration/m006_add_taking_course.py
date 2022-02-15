@@ -12,4 +12,5 @@ def add_taking_course(db:AsyncSession):
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

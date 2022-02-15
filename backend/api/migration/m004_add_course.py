@@ -9,10 +9,11 @@ def add_course(db:AsyncSession):
                 id = 1,
                 course_name = "sample_course",
                 start_date_time = datetime.datetime(2022,2,10,0,0,0),
-                start_date_time = datetime.datetime(2023,2,10,0,0,0),
+                end_date_time = datetime.datetime(2023,2,10,0,0,0),
                 created = datetime.datetime(2022,2,10,0,0,0)
             )
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

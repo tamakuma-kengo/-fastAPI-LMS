@@ -29,23 +29,9 @@ def add_pagegroup_flowpages(db:AsyncSession):
                 pagegroup_id = 1,
                 flowpage_id = 5,
                 order = 5
-            ),
-            pagegroup_model.PageGroupFlowPages(
-                pagegroup_id = 1,
-                flowpage_id = 6,
-                order = 6
-            ),
-            pagegroup_model.PageGroupFlowPages(
-                pagegroup_id = 1,
-                flowpage_id = 7,
-                order = 7
-            ),
-            pagegroup_model.PageGroupFlowPages(
-                pagegroup_id = 1,
-                flowpage_id = 8,
-                order = 8
-            ),
+            )
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

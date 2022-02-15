@@ -10,10 +10,11 @@ def add_flow(db:AsyncSession):
                 course_id = 1,
                 title = "sample_flow",
                 created = datetime.datetime(2022,2,10,0,0,0),
-                welcome_paeg_content_id = 2,
+                welcome_page_content_id = 2,
                 completion_page_content_id = 3 
             ),
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         

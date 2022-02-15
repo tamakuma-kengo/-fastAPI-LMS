@@ -9,4 +9,5 @@ def add_flow_session(db:AsyncSession):
     ]
     for row in rows:
         db.add(row)
+    db.flush()
         
