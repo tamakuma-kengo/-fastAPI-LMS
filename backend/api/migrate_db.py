@@ -14,7 +14,7 @@ from api.models.page_group import Base as PageGroupBase
 from api.models.flow_page import Base as PageBase
 from api.models.flow_session import Base as FlowSessionBase
 
-from api.migration.add_user import add_users
+from api.migration.add_rows import add_rows
 
 DB_URL = "mysql+pymysql://root@db:3306/demo?charset=utf8"
 engine = create_engine(DB_URL, echo=True)
@@ -51,12 +51,9 @@ def get_session():
     SessionClass = sessionmaker(engine)
     return SessionClass()
 
-def add_rows():
-    db = get_session()
-    add_users(db)
-
 if __name__ == "__main__":
-    reset_database()
     # drop_database()
-    add_rows()
+    reset_database()
+    db_session = get_session()
+    add_rows(db_session)
     
