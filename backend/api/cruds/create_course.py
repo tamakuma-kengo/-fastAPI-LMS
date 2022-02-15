@@ -329,7 +329,8 @@ async def add_single_text_question(db: AsyncSession, content_id: int, flow_page:
 
 async def add_multiple_text_question(db: AsyncSession, content_id: int, flow_page: dict):
     # フローページを追加
-    new_multiple_text_question = flow_page_schema.MultipleTextQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"])
+    answer_column_content_id = await add_content(db=db, content=flow_page["answer_column"])
+    new_multiple_text_question = flow_page_schema.MultipleTextQuestionCreate(content_id=content_id, title=flow_page["title"], page_type=flow_page["page_type"], answer_column_content_id=answer_column_content_id)
     row = flow_page_model.MultipleTextQuestion(**new_multiple_text_question.dict())
     db.add(row)
     await db.flush()

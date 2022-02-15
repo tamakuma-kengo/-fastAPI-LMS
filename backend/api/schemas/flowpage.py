@@ -31,6 +31,7 @@ class SingleTextQuestionCreate(QuestionCreate):
 
 class MultipleTextQuestionCreate(QuestionCreate):
     page_type: str = "MultipleTextQuestion"
+    asnwer_column_content_id: int
 
 class DescriptiveTextQuestionCreate(QuestionCreate):
     page_type: str = "DescriptiveTextQuestion"

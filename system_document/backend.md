@@ -111,6 +111,7 @@
 
 ## MultipleTextQuestions
 - flowpage_id: int \<foreign_key\<FlowPage.id>>
+- answer_column_content_id : int \<foreign_key\<Contents.id>>
 
 ## DescriptiveTextQuestions
 - flowpage_id: int \<foreign_key\<FlowPage.id>>

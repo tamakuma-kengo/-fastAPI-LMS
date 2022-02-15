@@ -47,6 +47,7 @@ class MultipleTextQuestion(Question):
     __tablename__ = "multiple_text_questions"
 
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
+    answer_column_content_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
 
     question = relationship("Question")
 
