@@ -11,6 +11,12 @@ def add_block_rule(db:AsyncSession):
                 end_date_time = None,
                 always = True
             ),
+            block_model.BlockRule(
+                block_id = 2,
+                start_date_time = None,
+                end_date_time = None,
+                always = True
+            ),
     ]
     for row in rows:
         db.add(row)

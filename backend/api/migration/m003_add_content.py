@@ -70,6 +70,11 @@ def add_content(db:AsyncSession):
                 content = "回答欄1:[[blank1]] 回答欄2:[[blank2]]",
                 created = datetime.datetime(2022,2,10,0,0,0)
             ),
+            content_model.Content(
+                id = 14,
+                content = "これはコースページの2つ目のブロックです",
+                created = datetime.datetime(2022,2,10,0,0,0)
+            ),
         ]
     for row in rows:
         db.add(row)

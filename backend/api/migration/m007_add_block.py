@@ -11,6 +11,12 @@ def add_block(db:AsyncSession):
                 content_id = 1,
                 order = 0
             ),
+            block_model.Block(
+                id = 2,
+                course_id = 1,
+                content_id = 14,
+                order = 1
+            ),
     ]
     for row in rows:
         db.add(row)
