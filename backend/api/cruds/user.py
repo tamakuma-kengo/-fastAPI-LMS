@@ -91,6 +91,24 @@ async def authenticate_user(db: AsyncSession, email: str, password: str):
 async def get_token(token: Optional[str] = Cookie(None)):
     return token
 
+async def get_authed_token(token=Depends(get_token)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        if token == None:
+            raise credentials_exception
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = TokenData(email=email)
+        return token_data
+    except JWTError:
+        raise credentials_exception
+
 async def get_current_user(db: AsyncSession = Depends(get_db),token: Optional[str] = Depends(get_token)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -108,7 +126,7 @@ async def get_current_user(db: AsyncSession = Depends(get_db),token: Optional[st
 
     except JWTError:
         raise credentials_exception
-    user = await get_user(db, username=token_data.username)
+    user = await get_user(db, email=token_data.email)
     if user is None:
         raise credentials_exception
     return user
