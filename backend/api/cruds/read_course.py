@@ -36,23 +36,55 @@ async def select_taking_course(db: AsyncSession,email: str) -> List[course_schem
     return result.all()
 
 async def select_course(db: AsyncSession,course_id: int) -> course_schema.CourseResponse:
-    result: Result = await(
+    course_result: Result = await(
         db.execute(
             select(
                 course_model.Course.id.label("course_id"),
                 course_model.Course.course_name,
+            ).where(course_model.Course.id == course_id)
+        )
+    )
+
+    block_result: Result = await(
+        db.execute(
+            select(
                 block_model.Block.order,
                 content_model.Content.content,
                 block_model.BlockRule.start_date_time,
                 block_model.BlockRule.end_date_time,
                 block_model.BlockRule.always
-            ).where(course_model.Course.id == course_id)
-            .where(course_model.Course.id == block_model.Block.course_id)
+            ).where(block_model.Block.course_id == course_id)
             .where(block_model.Block.content_id == content_model.Content.id)
             .where(block_model.Block.id == block_model.BlockRule.block_id)
+            .order_by(block_model.Block.order)
         )
     )
-    return result.all()
+
+    course_dict = course_result.mappings().first()
+    print(course_dict)
+    block_dict_list = block_result.mappings().all()
+    block_list = []
+    for block_d in block_dict_list:
+        rule_response = course_schema.BlockRuleResponse(
+            start_date_time = block_d["start_date_time"],
+            end_date_time = block_d["end_date_time"],
+            always = block_d["always"],
+        )
+
+        block_list += [ 
+            course_schema.BlockResponse(
+            order = block_d["order"],
+            content = block_d["content"],
+            rule =  rule_response
+        )
+        ]
+    output_dict = {
+        "course_id": course_dict["course_id"],
+        "course_name": course_dict["course_name"],
+        "blocks": block_list
+    }
+    print(output_dict)
+    return output_dict
     
 async def get_taking_courses(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
     taking_courses = await select_taking_course(db=db,email=authed_token.email)
