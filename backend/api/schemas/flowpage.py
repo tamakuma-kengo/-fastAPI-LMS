@@ -31,7 +31,7 @@ class SingleTextQuestionCreate(QuestionCreate):
 
 class MultipleTextQuestionCreate(QuestionCreate):
     page_type: str = "MultipleTextQuestion"
-    asnwer_column_content_id: int
+    answer_column_content_id: int
 
 class DescriptiveTextQuestionCreate(QuestionCreate):
     page_type: str = "DescriptiveTextQuestion"
@@ -45,3 +45,46 @@ class ChoiceQuestionChoicesCreate(BaseModel):
     order: int
     content_id: int
 
+# Response用
+class ChoiceQuestionChoiceResponse(BaseModel):
+    content: str
+    order: int
+
+class FlowPageContentResponse(BaseModel):
+    content: str
+
+class PageResponse(FlowPageContentResponse):
+    pass
+
+class QuestionResponse(FlowPageContentResponse):
+    pass
+
+class SingleTextQuestionResponse(FlowPageContentResponse):
+    blank_id: str
+
+class MultipleTextQuestionResponse(FlowPageContentResponse):
+    answer_column_content: str
+
+class DescriptiveTextQuestionResponse(FlowPageContentResponse):
+    blank_id: str
+
+class ChoiceQuestionResponse(FlowPageContentResponse):
+    choices : List[ChoiceQuestionChoiceResponse]
+    blank_id: str
+
+class FlowpageResponse(BaseModel):
+    title: str
+    page_type: str
+    page_content: FlowPageContentResponse
+
+class BlankAnswerResponse(BaseModel):
+    blank_id: str
+    answer: str
+
+# Request
+class AnswerBlankRequest(BaseModel):
+    flow_session_id: int
+    page_num: int
+    blank_id: str
+    answer: str
+    
