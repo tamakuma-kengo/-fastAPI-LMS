@@ -240,7 +240,7 @@ async def add_flow(db: AsyncSession,course_id,flow_dict):
     # コンテンツの登録
     welcome_page_content_id = await add_content(db,flow_dict["welcome_page_content"])
     completion_page_content_id = await add_content(db,flow_dict["completion_page_content"])
-    new_flow = flow_schema.FlowCreate(course_id=course_id, title=flow_dict["title"], welcome_page_content_id= welcome_page_content_id, completion_page_content_id= completion_page_content_id)
+    new_flow = flow_schema.FlowCreate(id_in_yml=flow_dict["id"], course_id=course_id, title=flow_dict["title"], welcome_page_content_id= welcome_page_content_id, completion_page_content_id= completion_page_content_id)
     row = flow_model.Flow(**new_flow.dict())
     db.add(row)
     await db.flush()
@@ -444,7 +444,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
             for page_i, page in enumerate(page_group["pages"]):
                 flowpage_id = await add_flow_page(db=db, flow_page=page)
                 # フローグループとページの対応情報を追加
-                await add_page_group_flow_pages(db=db, page_group_id=page_group_id, flowpage_id=flowpage_id, order=page_i)
+                await add_page_group_flow_pages(db=db, page_group_id=page_group_id, flowpage_id=flowpage_id, order=page_i+1)
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}

@@ -10,15 +10,11 @@ import api.models.course as course_model
 import api.models.user as user_model
 import api.models.block as block_model
 import api.models.content as content_model
+import api.models.flow as flow_model
 
 import api.schemas.course as course_schema
 
 from api.db import get_db
-
-from jose import JWTError, jwt
-
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
 
 async def select_taking_course(db: AsyncSession,email: str) -> List[course_schema.TakingCourseResponse]:
     result: Result = await(
@@ -60,10 +56,20 @@ async def select_course(db: AsyncSession,course_id: int) -> course_schema.Course
         )
     )
 
+    flow_result: Result = await(
+        db.execute(
+            select(
+                flow_model.Flow.id,
+                flow_model.Flow.id_in_yml,
+            ).where(flow_model.Flow.course_id == course_id)
+        )
+    )
+
     course_dict = course_result.mappings().first()
-    print(course_dict)
     block_dict_list = block_result.mappings().all()
+    flow_dict_list = flow_result.mappings().all()
     block_list = []
+    flow_link_list = []
     for block_d in block_dict_list:
         rule_response = course_schema.BlockRuleResponse(
             start_date_time = block_d["start_date_time"],
@@ -78,10 +84,19 @@ async def select_course(db: AsyncSession,course_id: int) -> course_schema.Course
             rule =  rule_response
         )
         ]
+    for flow_d in flow_dict_list:
+        flow_link_list += [
+            course_schema.FlowLinkResponse(
+                flow_id = flow_d["id"],
+                id_in_yml = flow_d["id_in_yml"]
+            )
+        ]
+
     output_dict = {
         "course_id": course_dict["course_id"],
         "course_name": course_dict["course_name"],
-        "blocks": block_list
+        "blocks": block_list,
+        "flow_links" :flow_link_list
     }
     print(output_dict)
     return output_dict
