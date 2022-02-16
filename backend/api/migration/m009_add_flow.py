@@ -7,6 +7,7 @@ def add_flow(db:AsyncSession):
     rows = [
             flow_model.Flow(
                 id = 1,
+                id_in_yml = "sample_flow",
                 course_id = 1,
                 title = "sample_flow",
                 created = datetime.datetime(2022,2,10,0,0,0),
