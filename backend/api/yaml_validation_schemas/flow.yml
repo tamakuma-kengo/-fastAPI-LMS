@@ -1,3 +1,4 @@
+id: str()
 title: str()
 welcome_page_content: str()
 completion_page_content: str()
