@@ -12,6 +12,7 @@ class Flow(Base):
     __tablename__ = "flows"
 
     id = Column(Integer, primary_key=True, index=True)
+    id_in_yml = Column(String(256), nullable=False)
     course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
     title = Column(String(128), nullable=False, comment="フローの名称.")
     created = Column(DATETIME,default=datetime.now(), nullable=False)

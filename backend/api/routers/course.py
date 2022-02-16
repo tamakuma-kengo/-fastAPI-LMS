@@ -34,5 +34,4 @@ async def get_course(course_id:int, user:HomeUserProfile=Depends(get_current_act
     if is_readable:
         course_respose = await read_course_crud.get_course(db=db, course_id=course_id)
         return course_respose
-    else:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
