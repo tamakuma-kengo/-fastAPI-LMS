@@ -31,9 +31,10 @@ class FlowSessionFlowPage(Base):
 class FlowSessionBlankAnswer(Base):
     __tablename__ = "flow_session_blank_answer"
 
-    flow_session_id = Column(Integer, ForeignKey("flow_sessions.id"), primary_key=True)
-    flowpage_id = Column(Integer, ForeignKey("flowpages.id"), primary_key=True)
-    blank_id = Column(String(256), ForeignKey("blanks.id"), primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
+    flow_session_id = Column(Integer, ForeignKey("flow_sessions.id"), nullable=False)
+    flowpage_id = Column(Integer, ForeignKey("flowpages.id"), nullable=False)
+    blank_id = Column(String(256), ForeignKey("blanks.id"), nullable=False)
     answer = Column(TEXT, comment="ユーザが回答した内容. ")
     created = Column(DATETIME,default=datetime.now(), nullable=False, comment="回答日時")
     

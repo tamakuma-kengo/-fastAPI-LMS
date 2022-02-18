@@ -47,6 +47,7 @@ class ChoiceQuestionChoicesCreate(BaseModel):
 
 # Response用
 class ChoiceQuestionChoiceResponse(BaseModel):
+    id: str
     content: str
     order: int
 

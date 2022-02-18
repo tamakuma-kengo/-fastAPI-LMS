@@ -7,7 +7,7 @@ def add_content(db:AsyncSession):
     rows = [
             content_model.Content(
                 id = 1,
-                content = "これはコースのトップページです.\nフローへのリンク(フロー)[flows/sample_flow.yml]",
+                content = "これはコースのトップページです.\nフローへのリンク[フロー](1/flow/1)",
                 created = datetime.datetime(2022,2,10,0,0,0)
             ),
             content_model.Content(

@@ -73,7 +73,12 @@ class BlockResponse(BaseModel):
     content: str
     rule: BlockRuleResponse
 
+class FlowLinkResponse(BaseModel):
+    flow_id: int
+    id_in_yml: str
+
 class CourseResponse(BaseModel):
     course_id: int
     course_name: str
     blocks: List[BlockResponse]
+    flow_links: List[FlowLinkResponse]

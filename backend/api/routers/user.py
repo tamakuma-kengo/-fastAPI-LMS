@@ -19,6 +19,3 @@ router = APIRouter()
 @router.get("/home_profile/",response_model=HomeUserProfile)
 async def get_home_user_profile(user_profile=Depends(get_home_profile)):
     return user_profile
-
-# async def read_items(token: str = Depends(oauth2_scheme),db: AsyncSession = Depends(get_db)):
-#     return {"token": token}
