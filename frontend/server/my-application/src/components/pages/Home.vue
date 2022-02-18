@@ -2,10 +2,15 @@
     <v-container>
       {{this.username}} さん 
       <v-row align="center" justify="space-around" v-if="is_creater">
-            <v-btn depressed color="primary" @click="add_course()" value="POST">
-                Add Course
-            </v-btn>
-        </v-row>
+        <v-btn depressed color="primary" @click="add_course()" value="POST">
+          Add Course
+        </v-btn>
+      </v-row>
+      <v-row align="center" justify="space-around" v-if="!is_creater">
+        <v-btn depressed color="primary" @click="move_to_courses()" value="POST">
+          show courses
+        </v-btn>
+      </v-row>
     </v-container>
 </template>
 
@@ -38,6 +43,9 @@ export default {
   methods:{
       add_course(){
         this.$router.push({name:'RegisterCourse'})
+      },
+      move_to_courses(){
+        this.$router.push({name:'Courses'})
       }
   },
 };

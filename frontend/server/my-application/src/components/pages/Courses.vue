@@ -1,9 +1,16 @@
 <template>
     <v-container>
-      <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
-      <v-container>
-        <v-row v-for="block in this.course.blocks" :key="block.order">
-          <div v-html="markdownToHtml(block.content)"></div>
+        {{this.username}} さん
+        <v-subheader :class="['text-h5']">履修中のコース</v-subheader>
+        
+      <v-divider></v-divider>
+      <v-container tm="24">
+        <v-row >
+          <v-col cols="12" sm="6" md="4" lg="3" xl="2" v-for="course in this.courses" :key="course.course_name" >
+            <v-card @click="start_course(course.course_id)">
+              <v-card-text>{{course.course_name}}</v-card-text>
+            </v-card>
+          </v-col>            
         </v-row>
       </v-container>
     </v-container>
@@ -11,7 +18,6 @@
 
 <script>
 import axios from "axios";
-import { marked } from 'marked';
 
 export default {
   name: "Course",
@@ -25,15 +31,17 @@ export default {
           console.log(response.data)
           self.username = response.data.username
           self.is_creater = response.data.create
-          axios.get(`http://127.0.0.1:8000/get_course/${self.course_id}`, {withCredentials: true})
+
+          axios.get("http://127.0.0.1:8000/get_courses", {withCredentials: true})
           .then(function(response){
             console.log(response.data)
-            self.course = response.data
+            self.courses = response.data
           }).catch(
             function(error){
               console.log(error.response)
             }
           )
+
         }).catch(
           function(error)  {
             if(error.response.status == 401){
@@ -45,18 +53,15 @@ export default {
         )
   },
   data: () => ({
-    course: {},
     username : "",
     is_creater : false,
-    html: "# aaaaa",
-    markdown:  "# Hello World",
+    courses : [
+      {"course_name":"aaaa"},
+    ]
   }),
   methods:{
-      add_course(){
-        this.$router.push({name:'RegisterCourse'})
-      },
-      markdownToHtml(md){
-        return marked(md);
+      start_course(course_id){
+        this.$router.push({name:'Course', params: {course_id: course_id}})
       }
   },
 };
