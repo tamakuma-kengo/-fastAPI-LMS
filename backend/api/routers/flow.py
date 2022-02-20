@@ -23,6 +23,13 @@ async def get_flow(flow_id: int, user: User = Depends(user_crud.get_current_acti
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     return await flow_crud.get_flow(db, flow_id)
 
+@router.get("/get_flow_info/{flow_session_id}", response_model=flow_schema.FlowInfoResponse)
+async def get_flow(flow_session_id: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
+    # is_readalbe = await flow_crud.is_readable_flow(db, flow_id, user)
+    # if not is_readalbe:
+        # raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
+    return await flow_crud.get_flow_info(db, flow_session_id)
+
 @router.get("/get_flow_welcome_page/{flow_id}", response_model=flow_schema.ContentResponse)
 async def get_flow(flow_id: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
     is_readalbe = await flow_crud.is_readable_flow(db, flow_id, user)
@@ -56,7 +63,7 @@ async def finish_flow_session(finish_flow_session_request: flow_schema.FinishFlo
 async def get_flowpage(flow_session_id: int, page_num: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
     return await flow_crud.get_flow_session_flowpage(db, flow_session_id, page_num)
 
-@router.get("/get_blank_answer/{flow_session_id}}/{page_num}", response_model=List[flowpage_schema.BlankAnswerResponse])
+@router.get("/get_blank_answer/{flow_session_id}/{page_num}", response_model=List[flowpage_schema.BlankAnswerResponse])
 async def get_flowpage(flow_session_id: int, page_num: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
     return await flow_crud.get_flow_session_flowpage_answer(db, flow_session_id, page_num)
 
