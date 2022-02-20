@@ -34,7 +34,7 @@ export default {
   name: "Home",
   created: function() {
     let self = this
-    axios.get("http://127.0.0.1:8000/users/creater", {withCredentials: true})
+    axios.get("http://localhost:8000/users/creater", {withCredentials: true})
         .then(function(response){
           console.log(response.data)
           self.username = response.data.username

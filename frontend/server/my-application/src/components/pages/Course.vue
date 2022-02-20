@@ -20,12 +20,12 @@ export default {
   },
   created: function() {
     let self = this
-    axios.get("http://127.0.0.1:8000/home_profile", {withCredentials: true})
+    axios.get("http://localhost:8000/home_profile", {withCredentials: true})
         .then(function(response){
           console.log(response.data)
           self.username = response.data.username
           self.is_creater = response.data.create
-          axios.get(`http://127.0.0.1:8000/get_course/${self.course_id}`, {withCredentials: true})
+          axios.get(`http://localhost:8000/get_course/${self.course_id}`, {withCredentials: true})
           .then(function(response){
             console.log(response.data)
             self.course = response.data

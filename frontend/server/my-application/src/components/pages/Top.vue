@@ -10,26 +10,12 @@
                 Sign up
             </v-btn>
         </v-row>
-        <v-row align="center" justify="space-around">
-            <v-btn depressed color="primary" @click="set_cookie()">
-                Sign up
-            </v-btn>
-        </v-row>
-        <v-row align="center" justify="space-around">
-            <v-btn depressed color="primary" @click="get_cookie()">
-                Sign up
-            </v-btn>
-        </v-row>
     </v-container>
 </template>
 
 <script>
-import axios from 'axios';
 export default {
   name: "Top",
-  data(){
-
-  },
   methods:{
     go_login_page(){
       this.$router.push({name:'Login'})
@@ -37,22 +23,6 @@ export default {
     go_signup_page(){
       this.$router.push({name:'Signup'})
     },
-    set_cookie(){
-      axios.get("/api/set_cookie",{withCredentials: true})
-      .then(
-        function(responce){
-          console.log(responce)
-        }
-      )
-    },
-    get_cookie(){
-      axios.get('/api/get_cookie',{withCredentials: true})
-      .then(
-        function(responce){
-          console.log(responce)
-        }
-      )
-    }
   }
 };
 </script>

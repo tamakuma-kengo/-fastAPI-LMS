@@ -49,10 +49,10 @@ export default {
         // params.append("password", this.password);
         let self = this
         axios
-          .post("/api/token", params, config)
+          .post("http://localhost:8000/token", params, config)
           .then(
-            function(responce){
-              console.log(responce)
+            function(response){
+              console.log(response)
               self.$router.push({name:'Home'})
             }
           ).catch(
