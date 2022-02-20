@@ -1,7 +1,7 @@
 from fastapi import  Depends,HTTPException,status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, func
 from typing import List, Optional, Tuple
 
 from api.schemas.user import User
@@ -33,6 +33,19 @@ async def select_flow(db: AsyncSession,flow_id: int) -> flow_schema.FlowResponse
                 flow_model.FlowRule.always
             ).where(flow_model.Flow.id == flow_id)
             .where(flow_model.Flow.id == flow_model.FlowRule.flow_id)
+        )
+    )
+    return result.first()
+
+async def select_flow_info(db: AsyncSession,flow_session_id: int) -> flow_schema.FlowInfoResponse:
+    result: Result = await(
+        db.execute(
+            select(
+                flow_model.Flow.title.label("flow_title"),
+                func.count("*").label("num_of_pages")
+            ).where(flow_session_model.FlowSessionFlowPage.flow_session_id == flow_session_id)
+            .where(flow_model.Flow.id == flow_session_model.FlowSession.flow_id)
+            .where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
         )
     )
     return result.first()
@@ -283,12 +296,35 @@ async def select_flow_session_flowpage(db: AsyncSession, flow_session_id: int, p
 async def select_flow_session_flowpage_answer(db: AsyncSession, flow_session_id: int, page_num: int) -> flowpage_schema.BlankAnswerResponse:
     result: Result = await(
         db.execute(
-            select(
-                flow_session_model.FlowSessionBlankAnswer.blank_id,
-                flow_session_model.FlowSessionBlankAnswer.answer,
-            ).where(flow_session_model.FlowSessionBlankAnswer.flow_session_id == flow_session_id)
-            .where(flow_session_model.FlowSessionBlankAnswer.flow_session_id == flow_session_model.FlowSessionFlowPage.flow_session_id)
-            .where(flow_session_model.FlowSessionFlowPage.order == page_num)
+            f"""
+            select tb_a.blank_id, tb_a.answer
+            from 
+            (
+                select flow_session_flow_pages.flowpage_id,  flow_session_blank_answer.blank_id, flow_session_blank_answer.answer, flow_session_blank_answer.created
+                from flow_session_blank_answer 
+                inner join 
+                flow_session_flow_pages
+                on flow_session_blank_answer.flow_session_id = flow_session_flow_pages.flow_session_id
+                and flow_session_blank_answer.flowpage_id = flow_session_flow_pages.flowpage_id
+                where flow_session_flow_pages.flow_session_id = {flow_session_id}
+                and flow_session_flow_pages.order = {page_num}
+            ) tb_a
+            inner join
+            (
+                select flow_session_flow_pages.flowpage_id, flow_session_blank_answer.blank_id, max(flow_session_blank_answer.created) as latest_created
+                from flow_session_blank_answer 
+                inner join 
+                flow_session_flow_pages
+                on flow_session_blank_answer.flow_session_id = flow_session_flow_pages.flow_session_id
+                and flow_session_blank_answer.flowpage_id = flow_session_flow_pages.flowpage_id
+                where flow_session_flow_pages.flow_session_id = {flow_session_id}
+                and flow_session_flow_pages.order = {page_num}
+                group by  flow_session_flow_pages.flowpage_id, flow_session_blank_answer.blank_id
+            ) tb_b
+            on tb_a.flowpage_id = tb_b.flowpage_id
+            and tb_a.blank_id = tb_b.blank_id
+            and tb_a.created = tb_b.latest_created 
+            """
         )
     )
     return result.all()
@@ -303,7 +339,7 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
                 .where(flow_session_model.FlowSessionFlowPage.order == answer_blank.page_num)
             )
         )
-        flowpage_id = result.first()[0]
+        flowpage_id = result.mappings().first()["flowpage_id"]
 
         new_flow_session_blank_answer = flow_schema.FlowSessionBlankAnswerCreate(
             flow_session_id = answer_blank.flow_session_id,
@@ -322,6 +358,9 @@ async def is_readable_flow(db: AsyncSession, flow_id: int, user: User):
 
 async def get_flow(db: AsyncSession, flow_id: int):
     return await select_flow(db=db, flow_id=flow_id)
+
+async def get_flow_info(db: AsyncSession, flow_session_id: int):
+    return await select_flow_info(db=db, flow_session_id=flow_session_id)
 
 async def get_flow_welcome_page(db: AsyncSession, flow_id: int):
     return await select_flow_welcome_page(db=db, flow_id=flow_id)
