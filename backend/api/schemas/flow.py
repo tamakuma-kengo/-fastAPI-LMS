@@ -50,10 +50,14 @@ class FlowResponse(BaseModel):
     challenge_limit: Optional[int]
     restart_session: Optional[bool]
     time_limit: Optional[int]
-    start_date_time: Optional[int]
+    start_date_time: Optional[datetime]
     end_answer_date_time: Optional[datetime]
     end_read_date_time: Optional[datetime]
     always: bool
+
+class FlowInfoResponse(BaseModel):
+    flow_title: str
+    num_of_pages: int
 
 class FlowSessionResponse(BaseModel):
     id: int

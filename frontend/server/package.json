@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axios": "^0.25.0",
+    "marked": "^4.0.12",
     "vue-upload-component": "^3.1.2",
     "vuetify": "^2.4.0"
   },

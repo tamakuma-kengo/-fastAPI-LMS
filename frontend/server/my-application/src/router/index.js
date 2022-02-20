@@ -70,7 +70,7 @@ const routes = [
     path: "/FlowSession/:flow_session_id/:page_num",
     name: "FlowSession",
     component: FlowSession,
-    props: (route) => ({flow_session_id: Number(route.params.flow_session_id), page_num: Number(route.params.page_num)})
+    props: (route) => ({flow_session_id: Number(route.params.flow_session_id), page_num: Number(route.params.page_num), flow_id: Number(route.params.flow_id)})
   },
 ];
 
