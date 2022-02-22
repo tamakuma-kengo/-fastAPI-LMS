@@ -170,6 +170,7 @@ async def select_single_text_question(db: AsyncSession, flowpage_id: int) -> flo
     result: Result = await(
         db.execute(
             select(
+                flow_page_model.SingleTextQuestion.id,
                 content_model.Content.content,
                 flow_page_model.Blank.id.label("blank_id")
             ).where(flow_page_model.SingleTextQuestion.id == flowpage_id)
@@ -267,6 +268,8 @@ async def select_flow_session_flowpage(db: AsyncSession, flow_session_id: int, p
     )
     flow_page_dict = flow_page_result.mappings().first()
     page_type = flow_page_dict["page_type"]
+
+    print(flow_page_dict)
 
     if page_type in ["page","Page"]:
         page_type = "SimplePage"

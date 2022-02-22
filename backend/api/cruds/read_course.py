@@ -98,7 +98,6 @@ async def select_course(db: AsyncSession,course_id: int) -> course_schema.Course
         "blocks": block_list,
         "flow_links" :flow_link_list
     }
-    print(output_dict)
     return output_dict
     
 async def get_taking_courses(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):

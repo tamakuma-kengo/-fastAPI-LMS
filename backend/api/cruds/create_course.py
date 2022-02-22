@@ -67,7 +67,8 @@ class YamlFormatter():
                 for line in included_yml.split("\n"):
                     new_line = " "*num_indent_spaces+line+"\n"
                     included_yml_with_indent += new_line
-                yml_text = re.sub(f'{script[0]}{{{{{script[1]}\s*\({script[2]}\)}}}}',included_yml_with_indent,yml_text)
+                print(included_yml_with_indent)
+                yml_text = re.sub(f'{script[0]}{{{{{script[1]}\s*\({script[2]}\)}}}}',included_yml_with_indent.replace("\\","\\\\"),yml_text)
         return yml_text
 
     def validate_course(self,yml_text:str):
@@ -441,10 +442,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
     # コンテンツの登録
     if "content" in course_dict:
         content = course_dict["content"]
-        print(id_in_yml_flow_id_dict)
-        print(content)
         for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
-            print(id_in_yml)
             content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
         content_id = await add_content(db, content)  # コンテンツの登録
         block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
