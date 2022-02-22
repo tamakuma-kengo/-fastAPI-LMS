@@ -25,8 +25,6 @@ ContentかList\<Block>のいずれかを指定する
 ## Flow
 ### Arguments
 - id: \<int> (Require)
-- id_in_flow: \<str> (Require)
-    - Flowを識別するためのid. コース内でUnique. 
 - title: \<str> (Require)
 - welcome_page_content: \<Content> (Require)
     - Flowの最初のページの内容. 
