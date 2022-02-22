@@ -269,7 +269,7 @@ export default {
     register_course(){
       const is_validation_success = this.validate_form()
       if(is_validation_success){
-          const params = {"course_name":this.courseName,"start_date_time": this.startDateTime.replace(" ","T"),"end_date_time":this.endDateTime.replace(" ","T"),"course_files": this.files}
+          const params = {"course_name":this.courseName,"start_date_time": "2022-2-10T00:00:00","end_date_time":"2022-05-10T23:59:59","course_files": this.files}
           console.log(JSON.stringify(params));
           const config = {
             headers: {
