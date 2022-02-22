@@ -13,8 +13,11 @@ export default {
   props: {
     page_content: Object
   },
+  mounted() {
+   window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+  },
   created: function() {
-    
+   window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
   },
   data: () => ({
   }),

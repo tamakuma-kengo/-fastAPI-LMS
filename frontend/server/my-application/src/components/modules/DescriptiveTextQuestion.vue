@@ -36,7 +36,11 @@ export default {
     page_content: Object,
     blank_answers: Array,
   },
+  mounted() {
+   window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+  },
   created: function() {
+    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
     this.blank_answers.forEach(ba => {
       this.blank_answer[ba.blank_id] = ba.answer
     });

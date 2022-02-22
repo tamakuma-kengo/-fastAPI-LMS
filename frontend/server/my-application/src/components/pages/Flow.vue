@@ -1,9 +1,9 @@
 <template>
     <v-container>
       <v-subheader :class="['text-h5']">{{flow.title}}</v-subheader>
-      <v-responsive :min-height="50" >
+      <v-responsive >
         <v-container class="pa-0">
-          <div :class="`rounded-lg`" class="blue lighten-4 pa-1" >
+          <div :class="`rounded-lg`" class="grey lighten-3" v-if="this.flow_sessions.length > 0">
             <v-container class="pa-1">
               <v-row no-gutters>
                 <v-col cols="1" class="text-center">
@@ -48,11 +48,11 @@
           </div>
         </v-container>
       </v-responsive>
-      <v-container>
+      <v-container class="mt-6">
         <v-row>
           <div v-html="markdownToHtml(welcome_page_content)"></div>
         </v-row>
-        <v-row>
+        <v-row class="mt-8">
           <v-btn depressed color="primary" @click="start_new_flow_session()">
             Start New Flow Session
           </v-btn>

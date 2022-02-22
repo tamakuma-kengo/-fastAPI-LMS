@@ -24,7 +24,6 @@
       </v-container>
     </v-container>
 </template>
-
 <script>
 import axios from "axios";
 import { marked } from 'marked';
@@ -37,7 +36,24 @@ export default {
     page_content: Object,
     blank_answers: Array,
   },
+  watch: {
+    page_content: {
+      handler: function () {
+        this.parse_md()
+        this.blank_answer = {}
+        this.blank_answers.forEach(ba => {
+          this.blank_answer[ba.blank_id] = ba.answer
+        });
+      },
+      deep: true
+    }
+  },
+  mounted() {
+   window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+  },
   created: function() {
+    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+
     this.parse_md()
     this.blank_answers.forEach(ba => {
       this.blank_answer[ba.blank_id] = ba.answer
@@ -46,10 +62,11 @@ export default {
   data: () => ({
     blank_answer: {},
     blank_values: {},
-    replaced_answer_columns: []
+    replaced_answer_columns: [],
   }),
   methods:{
     markdownToHtml(md){
+      window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
       return marked(md);
     },
     parse_md(){
@@ -103,9 +120,6 @@ export default {
         }
       )
     },
-    update_value(aaa){
-      console.log(aaa)
-    }
   },
 };
 </script>

@@ -1,25 +1,29 @@
 <template>
-  <v-container >
-    <v-subheader :class="['text-h5']">{{this.flow_title}}</v-subheader>
-      <v-container>
-        <flow-session-location-bar :page_num='this.page_num' :flow_session_id="this.flow_session_id" :num_of_pages="this.num_of_pages"></flow-session-location-bar>
+  <v-container class="mx-auto">
+    <v-responsive :min-width="800" :max-width="1200" class="mx-auto">
+      <v-container >  
+        <v-subheader :class="['text-h5']">{{this.flow_title}}</v-subheader>
+          <v-container>
+            <flow-session-location-bar :page_num='this.page_num' :flow_session_id="this.flow_session_id" :num_of_pages="this.num_of_pages"></flow-session-location-bar>
+          </v-container>
+          <v-subheader :class="['text-h5']">{{this.page.title}}</v-subheader>
+          <v-responsive :min-height="600">
+            <v-container fluid>
+                <component :is="componentName" :page_content='page_content' :flow_session_id='flow_session_id' :page_num='page_num' :blank_answers="blank_answers"></component>
+            </v-container>
+          </v-responsive>
+          <v-container >
+            <v-row>
+              <v-col>
+                <v-btn @click="go_previous_page()" v-if="this.page_num > 1"> 前のページ  </v-btn>
+              </v-col>
+              <v-col class="d-flex align-end flex-column">
+                <v-btn @click="go_next_page()" v-if="this.page_num < this.num_of_pages"> 次のページ </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
       </v-container>
-      <v-subheader :class="['text-h5']">{{this.page.title}}</v-subheader>
-      <v-responsive :min-height="600">
-        <v-container fluid>
-            <component :is="componentName" :page_content='page_content' :flow_session_id='flow_session_id' :page_num='page_num' :blank_answers="blank_answers"></component>
-        </v-container>
-      </v-responsive>
-      <v-container >
-        <v-row>
-          <v-col>
-            <v-btn @click="go_previous_page()" v-if="this.page_num > 1"> 前のページ  </v-btn>
-          </v-col>
-          <v-col class="d-flex align-end flex-column">
-            <v-btn @click="go_next_page()" v-if="this.page_num < this.num_of_pages"> 次のページ </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
+    </v-responsive>
   </v-container>
 </template>
 
