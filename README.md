@@ -11,3 +11,5 @@
 [DBスキーマ](https://github.com/68ymtlab/fast-api-lms/wiki/%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89-DB%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E)  
 
 [用語の定義](https://github.com/68ymtlab/fast-api-lms/wiki/%E7%94%A8%E8%AA%9E%E3%81%AE%E5%AE%9A%E7%BE%A9)  
+
+[ymalファイルの書き方](https://github.com/68ymtlab/fast-api-lms/wiki/Yaml%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E6%9B%B8%E3%81%8D%E6%96%B9)  
