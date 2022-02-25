@@ -57,7 +57,7 @@ export default {
         "flow_session_id": this.flow_session_id,
         "page_num": this.page_num,
         "blank_id": this.page_content.blank_id,
-        "answer": this.blank_answer[this.page_content.blank_id]
+        "answer": this.blank_answer[this.page_content.blank_id],
       }]
       const config = {
         headers: {

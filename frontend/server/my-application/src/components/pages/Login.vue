@@ -24,11 +24,6 @@ export default {
       password: "yanagiyanagi",
       email_rules: [
         value => !!value || 'Required.',
-        // value => (value || '').length <= 20 || 'Max 20 characters',
-        // value => {
-        //   const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        //   return pattern.test(value) || 'Invalid e-mail.'
-        // },
       ],
       password_rules: [
         value => !!value || 'Required.',
@@ -44,26 +39,43 @@ export default {
           withCredentials: true
         };
         const params = {email: this.email,password: this.password}
-        // const params = new URLSearchParams();
-        // params.append("email", this.email); 
-        // params.append("password", this.password);
         let self = this
-        axios
-          .post("http://localhost:8000/token", params, config)
-          .then(
-            function(response){
-              console.log(response)
-              self.$router.push({name:'Home'})
-            }
-          ).catch(
-            function(error){
+        axios.post("http://localhost:8000/token", params, config)
+        .then(function(response){
+          console.log(response.data)
+          axios.get("http://localhost:8000/home_profile", {withCredentials: true})
+          .then(function(response){
+              if(response.data.create){
+                self.go_teacher_home()
+              }else{
+                self.go_students_home()
+              }
+          }).catch(
+            function(error)  {
               console.log(error)
+              if(error.response.status == 401){
+                self.$router.push({name:'Signup'})
+              }else{
+                console.log(error.response)
+              }
             }
-          )
+          )}
+        ).catch(
+          function(error){
+            console.log(error)
+          }
+        )
       },
       go_signup_page: function(){
           this.$router.push({name:'Signup'})
       },
+      go_students_home: function(){
+          this.$router.push({name:'StudentHome'})
+      },
+      go_teacher_home: function(){
+          this.$router.push({name:'TeacherHome'})
+      },
+
   },
 };
 </script>

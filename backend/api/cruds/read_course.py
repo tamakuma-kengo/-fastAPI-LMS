@@ -1,3 +1,4 @@
+import  api.schemas.user as user_schema
 from fastapi import  Depends,HTTPException,status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
@@ -30,6 +31,33 @@ async def select_taking_course(db: AsyncSession,email: str) -> List[course_schem
         )
     )
     return result.all()
+
+async def select_created_courses(db: AsyncSession, user: user_schema.User) -> List[course_schema.TakingCourseResponse]:
+    result: Result = await(
+        db.execute(
+            select(
+                course_model.Course.id.label("course_id"),
+                course_model.Course.course_name,
+                course_model.Course.start_date_time,
+                course_model.Course.end_date_time
+            ).where(course_model.Course.created_by == user.id)
+        )
+    )
+    return result.all()
+
+async def select_course_info(db: AsyncSession, course_id:int, user: user_schema.User) -> course_schema.CourseInfoResponse:
+    result: Result = await(
+        db.execute(
+            select(
+                course_model.Course.course_name,
+                course_model.Course.created,
+                course_model.Course.start_date_time,
+                course_model.Course.end_date_time,
+            ).where(course_model.Course.id == course_id)
+            .where(course_model.Course.created_by == user.id)
+        )
+    )
+    return result.first()
 
 async def select_course(db: AsyncSession,course_id: int) -> course_schema.CourseResponse:
     course_result: Result = await(
@@ -99,10 +127,33 @@ async def select_course(db: AsyncSession,course_id: int) -> course_schema.Course
         "flow_links" :flow_link_list
     }
     return output_dict
+
+async def select_taking_users(db: AsyncSession, course_id:int, user: user_schema.User) -> List[user_schema.TakingCourseUserResponse]:
+    result: Result = await(
+        db.execute(
+            select(
+                user_model.User.username,
+                user_model.User.email,
+                user_model.User.is_active,
+                user_model.UserKind.kind_name,
+            ).where(course_model.Course.created_by == user.id)
+            .where(course_model.Course.id == course_id)
+            .where(course_model.Course.id == course_model.TakingCourse.course_id)
+            .where(user_model.User.id == course_model.TakingCourse.user_id)
+            .where(user_model.User.user_kind_id == user_model.UserKind.id)
+        )
+    )
+    return result.all()
     
 async def get_taking_courses(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
     taking_courses = await select_taking_course(db=db,email=authed_token.email)
     return taking_courses
+
+async def get_created_courses(db:AsyncSession, creater:user_schema.User):
+    return await select_created_courses(db=db, user=creater)
+
+async def get_course_info(course_id:int, creater:user_schema.User, db:AsyncSession):
+    return await select_course_info(db=db, course_id=course_id, user=creater)
 
 async def is_course_readable(db:AsyncSession, email:str, course_id:int):
     taking_courses = await select_taking_course(db=db,email=email)
@@ -112,3 +163,8 @@ async def is_course_readable(db:AsyncSession, email:str, course_id:int):
 async def get_course(db:AsyncSession, course_id:int):
     course_response = await select_course(db=db, course_id=course_id)
     return course_response
+
+async def get_taking_users(db:AsyncSession, user:user_schema.User, course_id:int):
+    taking_users_response = await select_taking_users(db=db, user=user, course_id=course_id)
+    return taking_users_response
+

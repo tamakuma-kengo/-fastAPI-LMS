@@ -6,7 +6,7 @@
           <v-container>
             <flow-session-location-bar :page_num='this.page_num' :flow_session_id="this.flow_session_id" :num_of_pages="this.num_of_pages"></flow-session-location-bar>
           </v-container>
-          <v-subheader :class="['text-h5']">{{this.page.title}}</v-subheader>
+          <v-subheader :class="['text-h5']">問題{{page_num}}</v-subheader>
           <v-responsive :min-height="600">
             <v-container fluid>
                 <component :is="componentName" :page_content='page_content' :flow_session_id='flow_session_id' :page_num='page_num' :blank_answers="blank_answers"></component>
@@ -29,15 +29,15 @@
 
 <script>
 import axios from "axios";
-import SimplePage from '../modules/SimplePage.vue'
-import SingleTextQuestion from '../modules/SingleTextQuestion.vue'
-import MultipleTextQuestion from '../modules/MultipleTextQuestion.vue'
-import DescriptiveTextQuestion from '../modules/DescriptiveTextQuestion.vue'
-import ChoiceQuestion from '../modules/ChoiceQuestion.vue'
-import FlowSessionLocationBar from '../modules/FlowSessionLocationBar.vue'
+import SimplePage from '../../modules/SimplePage.vue'
+import SingleTextQuestion from '../../modules/SingleTextQuestion.vue'
+import MultipleTextQuestion from '../../modules/MultipleTextQuestion.vue'
+import DescriptiveTextQuestion from '../../modules/DescriptiveTextQuestion.vue'
+import ChoiceQuestion from '../../modules/ChoiceQuestion.vue'
+import FlowSessionLocationBar from '../../modules/FlowSessionLocationBar.vue'
 
 export default {
-  name: "Flow",
+  name: "FlowSession",
   props: {
     flow_session_id: Number,
     page_num: Number,
@@ -103,20 +103,22 @@ export default {
         }).catch(function(error){
           console.log(error.response)
         })
-      }).catch(function(error)  {
-        if(error.response.status == 401){
-          self.$router.push({name:'Signup'})
-        }else{
-          console.log(error.response)
-        }
-      })
+        }).catch(function(error)  {
+          if(error.response.status == 401){
+            self.$router.push({name:'Signup'})
+          }else{
+            console.log(error.response)
+          }
+        })
     },
     go_previous_page(){
       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: this.page_num-1, blank_answers: this.blank_answers}})
     },
     go_next_page(){
       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: this.page_num+1, blank_answers: this.blank_answers}})
-    }
+    },
+    
+
   },
 };
 </script>

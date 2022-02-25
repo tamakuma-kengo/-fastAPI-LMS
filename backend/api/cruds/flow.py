@@ -37,6 +37,18 @@ async def select_flow(db: AsyncSession,flow_id: int) -> flow_schema.FlowResponse
     )
     return result.first()
 
+async def select_ids_by_flow_session_id(db: AsyncSession, flow_session_id: int) -> flow_schema.FlowIdResponse:
+    result: Result = await(
+        db.execute(
+            select(
+                flow_session_model.FlowSession.flow_id,
+                flow_model.Flow.course_id
+            ).where(flow_session_model.FlowSession.id == flow_session_id)
+            .where(flow_model.Flow.id == flow_session_model.FlowSession.flow_id)
+        )
+    )
+    return result.first()
+    
 async def select_flow_info(db: AsyncSession,flow_session_id: int) -> flow_schema.FlowInfoResponse:
     result: Result = await(
         db.execute(
@@ -361,6 +373,9 @@ async def is_readable_flow(db: AsyncSession, flow_id: int, user: User):
 
 async def get_flow(db: AsyncSession, flow_id: int):
     return await select_flow(db=db, flow_id=flow_id)
+
+async def get_ids_by_flow_session_id(db: AsyncSession, flow_session_id: int):
+    return await select_ids_by_flow_session_id(db=db, flow_session_id=flow_session_id)
 
 async def get_flow_info(db: AsyncSession, flow_session_id: int):
     return await select_flow_info(db=db, flow_session_id=flow_session_id)

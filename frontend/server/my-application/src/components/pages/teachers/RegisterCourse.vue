@@ -73,7 +73,7 @@ export default {
         if(!v) return true
         const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
         if(!pattern.test(v))
-          return '入力形式が不正です. ex.2022-02-04 13:30:30 '
+          return '入力形式が不正です. 例: 2022-02-04 13:30:30 '
         return true
       },
       v => {
@@ -168,7 +168,7 @@ export default {
         if(!v) return true
         const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
         if(!pattern.test(v))
-          return '入力形式が不正です. ex.2022-02-04 13:30:30 '
+          return '入力形式が不正です. 例: 2022-02-04 13:30:30 '
         return true
       },
       v => {
@@ -266,6 +266,9 @@ export default {
     endDateTime: "",
   }),
   methods:{
+    move_to_course_info(course_id){
+      this.$router.push({name:'CourseInfo', params: {course_id: course_id}})
+    },
     register_course(){
       const is_validation_success = this.validate_form()
       if(is_validation_success){
@@ -282,7 +285,7 @@ export default {
           .then(function(response){
             console.log(response.data)
             if (response.data.success){
-              self.$router.push({name:'Course', params: {course_id: response.data.registered_course.id}})
+              self.move_to_course_info(response.data.registered_course.id)
             }else{
               self.error_msgs = [response.data.error_msg]
             }

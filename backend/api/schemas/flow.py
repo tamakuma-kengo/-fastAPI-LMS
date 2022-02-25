@@ -55,6 +55,10 @@ class FlowResponse(BaseModel):
     end_read_date_time: Optional[datetime]
     always: bool
 
+class FlowIdResponse(BaseModel):
+    flow_id: int
+    course_id: int
+
 class FlowInfoResponse(BaseModel):
     flow_title: str
     num_of_pages: int

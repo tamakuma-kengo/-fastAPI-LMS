@@ -16,6 +16,7 @@ class Course(Base):
     start_date_time = Column(DATETIME, nullable=False, comment="閲覧可能になる日時.")
     end_date_time = Column(DATETIME, nullable=False, comment="閲覧が終了する日時")
     created = Column(DATETIME,default=datetime.datetime.now(), nullable=False)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
 
 # コース解答の閲覧権限情報
 class CourseGrant(Base):

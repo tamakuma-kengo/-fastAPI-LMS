@@ -1,12 +1,16 @@
 <template>
-    <v-container>
-      <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
+  <v-container>
+    <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
-        <v-row v-for="block in this.course.blocks" :key="block.order">
-          <div v-html="markdownToHtml(block.content)"></div>
-        </v-row>
-      </v-container>
+        <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
+        <v-container>
+          <v-row v-for="block in this.course.blocks" :key="block.order">
+            <div v-html="markdownToHtml(block.content)"></div>
+          </v-row>
+        </v-container>
     </v-container>
+    </v-responsive>
+  </v-container>
 </template>
 
 <script>

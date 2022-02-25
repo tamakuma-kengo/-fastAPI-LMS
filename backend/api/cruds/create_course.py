@@ -192,8 +192,8 @@ class YamlFormatter():
             return {"success":True, "error_msg":error_msg}
         return {"success":False, "error_msg":error_msg}
 
-async def add_course(db: AsyncSession, register_course_request:course_schema.RegisterCourseRequest):
-    new_course = course_schema.CourseCreate(course_name=register_course_request.course_name,start_date_time=register_course_request.start_date_time,end_date_time=register_course_request.end_date_time)
+async def add_course(db: AsyncSession, register_course_request:course_schema.RegisterCourseRequest, user_with_grant: UserWithGrant):
+    new_course = course_schema.CourseCreate(course_name=register_course_request.course_name,start_date_time=register_course_request.start_date_time,end_date_time=register_course_request.end_date_time, created_by=user_with_grant.id)
     row = course_model.Course(**new_course.dict())
     db.add(row)
     await db.flush()
@@ -412,7 +412,7 @@ async def add_page_group_flow_pages(db: AsyncSession, page_group_id: int, flowpa
 
 async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list) -> course_schema.RegisterCourseResponse:
     # コースの追加
-    registered_course = await add_course(db, register_course_request)
+    registered_course = await add_course(db, register_course_request,user_with_grant)
     # コース権限の追加
     await add_course_grant(db, registered_course, user_with_grant)
 

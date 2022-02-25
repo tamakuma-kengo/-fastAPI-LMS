@@ -28,12 +28,42 @@ class RegisterCourseRequest(BaseModel):
     end_date_time: datetime
     course_files: List[CourseFiles]
 
+# コース更新時のリクエスト
+class UpdateCourseNameRequest(BaseModel):
+    course_id: int
+    course_name: str
+
+class UpdateCourseDatetimeRequest(BaseModel):
+    course_id: int
+    start_date_time: datetime
+    end_date_time: datetime
+
+# コース更新時のレスポンス
+class UpdateCourseNameResponse(BaseModel):
+    success: bool
+    course_name: Optional[str] = None
+
+class UpdateCourseDatetimeResponse(BaseModel):
+    success: bool
+    start_date_time: Optional[datetime] = None
+    end_date_time: Optional[datetime] = None
+
+# 履修者登録時のリクエスト
+class RegisterTakingCourseRequest(BaseModel):
+    course_id: int
+    email: str
+
+# 履修者登録時のレスポンス
+class RegisterTakingCourseResponse(BaseModel):
+    success: bool
+    error_msg: Optional[str] = None
 
 ## insert用のスキーマ群
 class CourseCreate(BaseModel):
     course_name: str
     start_date_time: datetime
     end_date_time:datetime
+    created_by: int
 
 class CourseGrantCreate(BaseModel):
     user_id: int
@@ -59,6 +89,12 @@ class BlockRuleCreate(BaseModel):
 class TakingCourseResponse(BaseModel):
     course_id: int
     course_name: str
+    start_date_time: datetime
+    end_date_time: datetime
+
+class CourseInfoResponse(BaseModel):
+    course_name: str
+    created: datetime
     start_date_time: datetime
     end_date_time: datetime
 

@@ -23,6 +23,10 @@ async def get_flow(flow_id: int, user: User = Depends(user_crud.get_current_acti
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
     return await flow_crud.get_flow(db, flow_id)
 
+@router.get("/get_ids_by_flow_session_id/{flow_session_id}", response_model=flow_schema.FlowIdResponse)
+async def get_ids_by_flow_session_id(flow_session_id: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
+    return await flow_crud.get_ids_by_flow_session_id(db=db, flow_session_id=flow_session_id)
+
 @router.get("/get_flow_info/{flow_session_id}", response_model=flow_schema.FlowInfoResponse)
 async def get_flow(flow_session_id: int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
     # is_readalbe = await flow_crud.is_readable_flow(db, flow_id, user)

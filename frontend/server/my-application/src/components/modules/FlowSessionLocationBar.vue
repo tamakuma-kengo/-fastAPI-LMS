@@ -6,7 +6,7 @@
             <v-col cols="1">
               <v-container fill-height>
                 <v-row no-gutters>
-                  <v-btn block class="pa-1">
+                  <v-btn @click="go_flow_top_page()" block class="pa-1">
                     Home
                   </v-btn>
                 </v-row>
@@ -29,7 +29,7 @@
             <v-col cols="1">
               <v-container fill-height>
                 <v-row no-gutters>
-                  <v-btn block class="pa-1">
+                  <v-btn @click="finish_flow_session()" block class="pa-1">
                     終了
                   </v-btn>
                 </v-row>
@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "FlowSessionLocationBar",
   props: {
@@ -56,7 +58,35 @@ export default {
   methods:{
      go_any_page(page_num){
        this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})
-     }
+     },
+     go_flow_top_page(){
+      let self = this
+      axios.get(`http://localhost:8000/get_ids_by_flow_session_id/${self.flow_session_id}`, {withCredentials: true})
+      .then(function(response){
+        console.log(response.data)
+        let flow_id = response.data.flow_id
+        self.$router.push({name:'Flow', params: {flow_id:flow_id}})
+      }).catch(function(error){
+        console.log(error.response)
+      })
+    },
+    finish_flow_session(){
+      const params = {"flow_session_id": this.flow_session_id}
+      const config = {headers: {'Content-Type': 'application/json'},withCredentials: true};
+      let self = this
+      axios.post(`http://localhost:8000/finish_flow_session`, params, config)
+      .then(function(response){
+        console.log(response.data)
+        self.go_flow_completion_page()
+      }).catch(
+        function(error){
+          console.log(error)
+        }
+      )
+    },
+    go_flow_completion_page(){
+      this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})
+    }
   },
 };
 </script>

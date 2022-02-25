@@ -1,64 +1,68 @@
 <template>
-    <v-container>
-      <v-subheader :class="['text-h5']">{{flow.title}}</v-subheader>
-      <v-responsive >
-        <v-container class="pa-0">
-          <div :class="`rounded-lg`" class="grey lighten-3" v-if="this.flow_sessions.length > 0">
-            <v-container class="pa-1">
-              <v-row no-gutters>
-                <v-col cols="1" class="text-center">
-                  #
-                </v-col>
-                <v-col cols="4" class="text-center">
-                  start_datetime
-                </v-col>
-                <v-col cols="4" class="text-center">
-                  finish_datetime
-                </v-col>
-                <v-col cols="2" class="text-center">
-                  Finished
-                </v-col>
-                <v-col cols="1" class="text-center">
-                  Restart
-                </v-col>
-              </v-row>
-              <v-row v-for="(flow_session,i) in this.flow_sessions" :key="flow_session.id" class="pa-0 ma-0" no-gutters>
-                 <v-col cols="1" class="text-center">
-                  {{i+1}}
-                </v-col>
-                <v-col cols="4" class="text-center">
-                  {{flow_session.start_date_time}}
-                </v-col>
-                <v-col cols="4" v-if="flow_session.finish_date_time" class="text-center">
-                  {{flow_session.finish_date_time}}
-                </v-col>
-                <v-col cols="4" v-if="!flow_session.finish_date_time" class="text-center">
-                  -
-                </v-col>
-                <v-col cols="2" class="text-center">
-                  {{flow_session.is_finished}}
-                </v-col>
-                <v-col cols="1" class="text-center pa-1" >
-                  <v-btn @click="restart_flow_session(flow_session.id)" small>
-                    start
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </div>
+  <v-container>
+    <v-responsive :max-width="1200" class="mx-auto">
+      <v-container>
+        <v-subheader :class="['text-h5']">{{flow.title}}</v-subheader>
+        <v-responsive >
+          <v-container class="pa-0">
+            <div :class="`rounded-lg`" class="grey lighten-3" v-if="this.flow_sessions.length > 0">
+              <v-container class="pa-1">
+                <v-row no-gutters>
+                  <v-col cols="1" class="text-center">
+                    #
+                  </v-col>
+                  <v-col cols="4" class="text-center">
+                    start_datetime
+                  </v-col>
+                  <v-col cols="4" class="text-center">
+                    finish_datetime
+                  </v-col>
+                  <v-col cols="2" class="text-center">
+                    Finished
+                  </v-col>
+                  <v-col cols="1" class="text-center">
+                    Restart
+                  </v-col>
+                </v-row>
+                <v-row v-for="(flow_session,i) in this.flow_sessions" :key="flow_session.id" class="pa-0 ma-0" no-gutters>
+                  <v-col cols="1" class="text-center">
+                    {{i+1}}
+                  </v-col>
+                  <v-col cols="4" class="text-center">
+                    {{flow_session.start_date_time}}
+                  </v-col>
+                  <v-col cols="4" v-if="flow_session.finish_date_time" class="text-center">
+                    {{flow_session.finish_date_time}}
+                  </v-col>
+                  <v-col cols="4" v-if="!flow_session.finish_date_time" class="text-center">
+                    -
+                  </v-col>
+                  <v-col cols="2" class="text-center">
+                    {{flow_session.is_finished}}
+                  </v-col>
+                  <v-col cols="1" class="text-center pa-1" >
+                    <v-btn @click="restart_flow_session(flow_session.id)" small>
+                      start
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </div>
+          </v-container>
+        </v-responsive>
+        <v-container class="mt-6">
+          <v-row>
+            <div v-html="markdownToHtml(welcome_page_content)"></div>
+          </v-row>
+          <v-row class="mt-8">
+            <v-btn depressed color="primary" @click="start_new_flow_session()">
+              Start New Flow Session
+            </v-btn>
+          </v-row>
         </v-container>
-      </v-responsive>
-      <v-container class="mt-6">
-        <v-row>
-          <div v-html="markdownToHtml(welcome_page_content)"></div>
-        </v-row>
-        <v-row class="mt-8">
-          <v-btn depressed color="primary" @click="start_new_flow_session()">
-            Start New Flow Session
-          </v-btn>
-        </v-row>
       </v-container>
-    </v-container>
+    </v-responsive>
+  </v-container>
 </template>
 
 <script>

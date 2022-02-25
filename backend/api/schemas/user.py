@@ -38,7 +38,7 @@ class HomeUserProfile(BaseModel):
     create: bool
     is_active: bool
 
-class UserWithGrant:
+class UserWithGrant(BaseModel):
     id:int
     username: str
     email: str
@@ -46,3 +46,9 @@ class UserWithGrant:
     is_active: bool
     kind_name: str
     create: bool
+
+class TakingCourseUserResponse(BaseModel):
+    username: str
+    email: str
+    kind_name: str
+    is_active: bool
