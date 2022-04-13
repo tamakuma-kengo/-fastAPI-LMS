@@ -70,6 +70,8 @@ class YamlFormatter():
                 print(included_yml_with_indent)
                 yml_text = re.sub(f'{script[0]}{{{{{script[1]}\s*\({script[2]}\)}}}}',included_yml_with_indent.replace("\\","\\\\"),yml_text)
         return yml_text
+    
+    #image用のreplace_scripts
 
     def validate_course(self,yml_text:str):
         validate_error = []
@@ -83,6 +85,11 @@ class YamlFormatter():
             for link in flow_links:
                 if not link[0] in self.directory_structure[self.root_directory]["flows"]:
                     validate_error += [f"flow_file '{link[0]}' is not found."]
+            # imageリンクの存在チェック
+            image_links = re.findall('\(\s*image\s*:\s*(.+?)\s*\)',yml_text,re.S)
+            for link in image_links:
+                if not link[0] in self.directory_structure[self.root_directory]["images"]:
+                    validate_error += [f"image_file '{link[0]}' is not found."]
         except ValueError as e:
             t = traceback.format_exception_only(type(e),e)
             validate_error += t
@@ -186,6 +193,19 @@ class YamlFormatter():
                 course_validation_success = course_validation_success and flow_validate["success"]
                 if not course_validation_success:
                     error_msg += "\n".join(flow_validate["error_msgs"])
+
+        ## imageのバリデーション
+        course_validation_success = True
+        if "images" in self.directory_structure[self.root_directory]:
+            image_files = self.directory_structure[self.root_directory]["images"].keys()
+            for image_file in image_files:
+                if not re.match('.*\.(jpeg|jpg)$',image_file):
+                    error_msg += f"{image_file} is not yml_file\n"
+                image_validate = self.validate_flow(self.directory_structure[self.root_directory]["images"][image_file])
+                course_validation_success = course_validation_success and image_validate["success"]
+                if not course_validation_success:
+                    error_msg += "\n".join(image_validate["error_msgs"])
+        
         
         ## 書き込み可否
         if course_validation_success and  course_validation_success:
