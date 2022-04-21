@@ -4,6 +4,7 @@ num_of_show: int(min=1)
 ---
 page:
   title: str(required=True)
+  commentary: str(required=True)
   content: str(required=True)
   page_type: str(required=True)
   correct_answer: include('correct_answer')

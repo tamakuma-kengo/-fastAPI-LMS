@@ -55,5 +55,5 @@ if __name__ == "__main__":
     # drop_database()
     reset_database()
     db_session = get_session()
-    add_rows(db_session)
+    # add_rows(db_session)
     
