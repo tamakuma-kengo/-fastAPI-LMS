@@ -347,6 +347,7 @@ async def select_flow_session_flowpage_answer(db: AsyncSession, flow_session_id:
 async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpage_schema.AnswerBlankRequest]):
     for answer_blank in answer_blank_request:
         result: Result = await(
+            # flowsession_idとページ番号をもとに問題を特定して問題IDを受け取る処理
             db.execute(
                 select(
                     flow_session_model.FlowSessionFlowPage.flowpage_id,
@@ -363,8 +364,12 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
             answer = answer_blank.answer,
             created = datetime.datetime.now()
         )
+        # 受け取った問題IDを元に回答を登録する処理
         row = flow_session_model.FlowSessionBlankAnswer(**new_flow_session_blank_answer.dict())
         db.add(row)
+        # flowpage_idとblank_idを元に正答の一覧をSelectする処理をここに記述 これをユーザの回答と比較をして、True/False決定する.
+        # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
+
     await db.commit()
     return 
 
