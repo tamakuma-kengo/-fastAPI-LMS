@@ -1,4 +1,3 @@
 title: str()
 page_type: enum("Page","page")
 content: str()
-commentary: str()
