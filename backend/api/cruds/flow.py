@@ -368,6 +368,13 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         row = flow_session_model.FlowSessionBlankAnswer(**new_flow_session_blank_answer.dict())
         db.add(row)
         # flowpage_idとblank_idを元に正答の一覧をSelectする処理をここに記述 これをユーザの回答と比較をして、True/False決定する.
+        """""
+        db.execute(
+            select(
+                
+            )
+        )
+        """
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
 
     await db.commit()
