@@ -8,7 +8,7 @@ import api.models.image as image_model
 
 import api.schemas.image as image_schema
 
-from api.db import get_db
+
 
 
 async def select_image(db:AsyncSession, image_id: int) -> image_schema.ImageResponse:

@@ -73,8 +73,8 @@ class YamlFormatter():
                 print(included_yml_with_indent)
                 yml_text = re.sub(f'{script[0]}{{{{{script[1]}\s*\({script[2]}\)}}}}',included_yml_with_indent.replace("\\","\\\\"),yml_text)
         return yml_text
-    
-    #image用のreplace_scripts
+
+
 
     def validate_course(self,yml_text:str):
         validate_error = []
@@ -205,7 +205,6 @@ class YamlFormatter():
                 if not re.match('.*\.(jpeg|jpg|png)$',image_name):
                     error_msg += f"{image_name} is not yml_file\n"
                 image_data = self.directory_structure[self.root_directory]["images"][image_name]
-                print(image_data)
                 self.image_dict[image_name] = image_data
         
         
@@ -263,9 +262,9 @@ async def add_image(db: AsyncSession, image_name: str, image_data: bytes):
     new_image = image_schema.ImageCreate(name=image_name, imgdata=image_data)
     row = image_model.Image(**new_image.dict())
     db.add(row)
-    db.flush()
-    #await db.refresh(row)
-    return
+    await db.flush()
+    await db.refresh(row)
+    return row.id
 
 async def add_flow(db: AsyncSession,course_id,flow_dict):
     # コンテンツの登録
@@ -448,8 +447,11 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
 
 
     # imageの追加
+    id_in_image_name = {}
     for image_name,image_data in image_dict.items():
-        await add_image(db, image_name, image_data)
+        image_id = await add_image(db, image_name, image_data)
+        id_in_image_name[image_id] = image_name
+
 
     
     # フローの追加
@@ -475,23 +477,28 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
 
     # コースブロックの追加
     # コンテンツの登録
-    if "content" in course_dict:
-        content = course_dict["content"]
-        for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
-            content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
-        content_id = await add_content(db, content)  # コンテンツの登録
-        block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
-        await add_block_rules(db, block_id)
-    # ブロックの登録
-    else:
-        for block_i, block in enumerate(course_dict["blocks"]):
-            content_id = await add_content(db, block["content"])    # コンテンツの登録
-            block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
-            # ブロックルールの登録
-            if "rules" in block:
-                await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+    for course_list in course_dict.values():
+        for course_list_dict in course_list:
+            if "content" in course_list_dict.keys():
+                content = course_list_dict["content"]
+                for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
+                    content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
+                # yml (image/image.jpg) -> markdawn ![~~](url)
+                for image_id, image_name in id_in_image_name.items():
+                    content = re.sub(f"\(\s*image/{image_name}\s*\)", f"![contentsimage](localhost:8000/get_image/{image_id})", content)
+                content_id = await add_content(db, content)  # コンテンツの登録
+                block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
+                await add_block_rules(db, block_id)
+            # ブロックの登録
             else:
-                await add_block_rules(db=db, block_id=block_id)
+                for block_i, block in enumerate(course_dict["blocks"]):
+                    content_id = await add_content(db, block["content"])    # コンテンツの登録
+                    block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
+                    # ブロックルールの登録
+                    if "rules" in block:
+                        await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+                    else:
+                        await add_block_rules(db=db, block_id=block_id)
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}
