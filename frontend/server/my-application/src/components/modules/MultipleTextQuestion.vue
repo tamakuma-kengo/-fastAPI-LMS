@@ -63,6 +63,7 @@ export default {
     blank_answer: {},
     blank_values: {},
     replaced_answer_columns: [],
+    is_correct: {}
   }),
   methods:{
     markdownToHtml(md){

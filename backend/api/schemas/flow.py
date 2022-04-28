@@ -83,7 +83,7 @@ class ContentResponse(BaseModel):
     
 class RegisterAnswerResponse(BaseModel):
     is_correct: bool
-    commentary: str
+    # commentary: str
     
 # リクエスト用
 class StartFlowSessionRequest(BaseModel):

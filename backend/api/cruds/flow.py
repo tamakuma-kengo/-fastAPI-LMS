@@ -346,7 +346,7 @@ async def select_flow_session_flowpage_answer(db: AsyncSession, flow_session_id:
     )
     return result.all()
 
-async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpage_schema.AnswerBlankRequest]):
+async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpage_schema.AnswerBlankRequest])-> List[flow_schema.RegisterAnswerResponse]:
     response = []
     for answer_blank in answer_blank_request:
         result: Result = await(
