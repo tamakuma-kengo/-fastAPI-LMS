@@ -12,6 +12,7 @@ import api.models.block as block_model
 import api.models.flow as flow_model
 import api.models.page_group as page_group_model
 import api.models.flow_page as flow_page_model
+import api.models.image as image_model
 
 
 import api.schemas.content as content_schema
@@ -20,6 +21,7 @@ import api.schemas.course as course_schema
 import api.schemas.flow as flow_schema
 import api.schemas.page_group as page_group_schema
 import api.schemas.flowpage as flow_page_schema
+import api.schemas.image as image_schema
 
 import yamale
 import yaml
@@ -32,6 +34,7 @@ class YamlFormatter():
         self.directory_structure = self.create_directry_structure(files)
         self.course_yml_dict = {}
         self.flow_yml_list = []
+        self.image_dict = {}
 
     def create_directry_structure(self,files:List[course_schema.RegisterCourseRequest]):
         directory_structure = {}
@@ -193,18 +196,17 @@ class YamlFormatter():
                 course_validation_success = course_validation_success and flow_validate["success"]
                 if not course_validation_success:
                     error_msg += "\n".join(flow_validate["error_msgs"])
-
-        ## imageのバリデーション
+        
+        ## image_dict {ファイル名：バイナリデータ}の追加
         course_validation_success = True
         if "images" in self.directory_structure[self.root_directory]:
             image_files = self.directory_structure[self.root_directory]["images"].keys()
-            for image_file in image_files:
-                if not re.match('.*\.(jpeg|jpg)$',image_file):
-                    error_msg += f"{image_file} is not yml_file\n"
-                image_validate = self.validate_flow(self.directory_structure[self.root_directory]["images"][image_file])
-                course_validation_success = course_validation_success and image_validate["success"]
-                if not course_validation_success:
-                    error_msg += "\n".join(image_validate["error_msgs"])
+            for image_name in image_files:
+                if not re.match('.*\.(jpeg|jpg|png)$',image_name):
+                    error_msg += f"{image_name} is not yml_file\n"
+                image_data = self.directory_structure[self.root_directory]["images"][image_name]
+                print(image_data)
+                self.image_dict[image_name] = image_data
         
         
         ## 書き込み可否
@@ -256,6 +258,14 @@ async def add_block_rules(db: AsyncSession,block_id,rules=None):
     row = block_model.BlockRule(**new_block_rule.dict())
     db.add(row)
     return 
+
+async def add_image(db: AsyncSession, image_name: str, image_data: bytes):
+    new_image = image_schema.ImageCreate(name=image_name, imgdata=image_data)
+    row = image_model.Image(**new_image.dict())
+    db.add(row)
+    db.flush()
+    #await db.refresh(row)
+    return
 
 async def add_flow(db: AsyncSession,course_id,flow_dict):
     # コンテンツの登録
@@ -430,11 +440,16 @@ async def add_page_group_flow_pages(db: AsyncSession, page_group_id: int, flowpa
     db.add(row)
     return
 
-async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list) -> course_schema.RegisterCourseResponse:
+async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list,image_dict) -> course_schema.RegisterCourseResponse:
     # コースの追加
     registered_course = await add_course(db, register_course_request,user_with_grant)
     # コース権限の追加
     await add_course_grant(db, registered_course, user_with_grant)
+
+
+    # imageの追加
+    for image_name,image_data in image_dict.items():
+        await add_image(db, image_name, image_data)
 
     
     # フローの追加
@@ -485,6 +500,6 @@ async def register_course(user_with_grant:UserWithGrant, register_course_request
     yaml_formatter = YamlFormatter(register_course_request.course_files)
     validate_result = yaml_formatter.validate_files()
     if validate_result["success"]:
-        result = await add_course_file(db, user_with_grant, register_course_request,yaml_formatter.course_yml_dict,yaml_formatter.flow_yml_list)
+        result = await add_course_file(db, user_with_grant, register_course_request,yaml_formatter.course_yml_dict,yaml_formatter.flow_yml_list,yaml_formatter.image_dict)
         return result
     return validate_result
