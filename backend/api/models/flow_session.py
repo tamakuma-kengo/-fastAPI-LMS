@@ -26,7 +26,7 @@ class FlowSessionFlowPage(Base):
     flowpage_id = Column(Integer, ForeignKey("flowpages.id"), primary_key=True)
     order = Column(Integer, nullable=False, comment="フロー内での表示順序. 同じフロー内で一意.")
     submitted = Column(Boolean, default=False, comment="問題を解答したか否か.")
-    is_correct = Column(Boolean)
+    is_correct = Column(Boolean, default=False, comment = "ユーザの回答が正解か否か.")
     
 # フローセッションと各ページの解答情報
 class FlowSessionBlankAnswer(Base):

@@ -1,7 +1,9 @@
+from tokenize import triple_quoted
+from urllib import response
 from fastapi import  Depends,HTTPException,status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
-from sqlalchemy import select, insert, update, func
+from sqlalchemy import select, insert, true, update, func
 from typing import List, Optional, Tuple
 
 from api.schemas.user import User
@@ -345,6 +347,7 @@ async def select_flow_session_flowpage_answer(db: AsyncSession, flow_session_id:
     return result.all()
 
 async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpage_schema.AnswerBlankRequest]):
+    response = []
     for answer_blank in answer_blank_request:
         result: Result = await(
             # flowsession_idとページ番号をもとに問題を特定して問題IDを受け取る処理
@@ -368,17 +371,45 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         row = flow_session_model.FlowSessionBlankAnswer(**new_flow_session_blank_answer.dict())
         db.add(row)
         # flowpage_idとblank_idを元に正答の一覧をSelectする処理をここに記述 これをユーザの回答と比較をして、True/False決定する.
-        """""
-        db.execute(
-            select(
-                
+        # 正答をもらってくる
+        result: Result = await(
+            db.execute(
+                select(
+                    flow_page_model.CorrectAnswer.id,
+                    flow_page_model.CorrectAnswer.flowpage_id,
+                    flow_page_model.CorrectAnswer.blank_id,
+                    flow_page_model.CorrectAnswer.type ,
+                    flow_page_model.CorrectAnswer.value,
+                    flow_session_model.FlowSessionFlowPage.order
+                ).where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
+                .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flow_page_model.FlowPage.id)
+                .where(flow_page_model.FlowPage.id == flow_page_model.CorrectAnswer.flowpage_id)
+                .where(flow_session_model.FlowSession.id == answer_blank.flow_session_id)
+                .where(flow_page_model.CorrectAnswer.blank_id == answer_blank.blank_id)                 
             )
         )
-        """
+        # 解答と正答の比較
+        correct_answer_dict = result.mappings().all()
+        for correct_answer in correct_answer_dict:
+            if str(answer_blank.answer) == str(correct_answer):
+                is_correct = true
+                break
+        res_row = {'blank_id': correct_answer.blank_id, 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]["value"]}
+        response += [res_row]
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
-
+        flowpage_id = correct_answer_dict[0]["value"]
+        order = correct_answer_dict[0]["order"]
+        update_iscorrect: Result = await(
+            db.execute(
+                update(flow_session_model.FlowSessionFlowPage)
+                .where(flow_session_model.FlowSessionFlowPage.flow_session_id == answer_blank.flow_session_id)
+                .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flowpage_id)
+                .where(flow_session_model.FlowSessionFlowPage.order == order)
+                .values(is_correct = is_correct)
+            )
+        )
     await db.commit()
-    return 
+    return response
 
 async def is_readable_flow(db: AsyncSession, flow_id: int, user: User):
     return True
