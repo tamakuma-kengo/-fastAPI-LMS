@@ -30,7 +30,7 @@ class Question(FlowPage):
     __tablename__ = "questions"
 
     id = Column(Integer, ForeignKey("flowpages.id"), primary_key=True)
-    commentary_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
+    #commentary_id = Column(Integer, ForeignKey("contents.id"), nullable=False)
     blank = relationship("Blank", back_populates="question")
     flowpage = relationship("FlowPage")
 
