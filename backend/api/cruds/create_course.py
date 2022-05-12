@@ -432,7 +432,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
             page_group_id = await add_page_groups(db=db, flow_id=flow_id, order=page_group_i, page_group=page_group)
             print(f"page_group_id: {page_group_id}")
 
-            # ページの追加
+        # ページの追加
             for page_i, page in enumerate(page_group["pages"]):
                 flowpage_id = await add_flow_page(db=db, flow_page=page)
                 # フローグループとページの対応情報を追加
@@ -440,23 +440,27 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
 
     # コースブロックの追加
     # コンテンツの登録
-    if "content" in course_dict:
-        content = course_dict["content"]
-        for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
-            content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
-        content_id = await add_content(db, content)  # コンテンツの登録
-        block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
-        await add_block_rules(db, block_id)
-    # ブロックの登録
-    else:
-        for block_i, block in enumerate(course_dict["blocks"]):
-            content_id = await add_content(db, block["content"])    # コンテンツの登録
-            block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
-            # ブロックルールの登録
-            if "rules" in block:
-                await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+    for course_list in course_dict.values():
+        for course_list_dict in course_list:
+            if "content" in course_list_dict.keys():
+                content = course_list_dict["content"]
+                for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
+                    content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
+                # yml (image/image.jpg) -> markdawn ![~~](url)
+                content_id = await add_content(db, content)  # コンテンツの登録
+                block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
+                await add_block_rules(db, block_id)
+                # ブロックの登録
             else:
-                await add_block_rules(db=db, block_id=block_id)
+                for block_i, block in enumerate(course_dict["blocks"]):
+                    content_id = await add_content(db, block["content"])    # コンテンツの登録
+                    block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
+                    # ブロックルールの登録
+                    if "rules" in block:
+                        await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+                    else:
+                        await add_block_rules(db=db, block_id=block_id)
+
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}
