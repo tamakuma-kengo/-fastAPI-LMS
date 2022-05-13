@@ -380,7 +380,7 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
                     flow_page_model.CorrectAnswer.blank_id,
                     flow_page_model.CorrectAnswer.type ,
                     flow_page_model.CorrectAnswer.value,
-                    flow_session_model.FlowSessionFlowPage.order
+                    flow_session_model.FlowSessionFlowPage.order,
                 ).where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
                 .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flow_page_model.FlowPage.id)
                 .where(flow_page_model.FlowPage.id == flow_page_model.CorrectAnswer.flowpage_id)
@@ -390,12 +390,16 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         )
         # 解答と正答の比較
         correct_answer_dict = result.mappings().all()
+        print(correct_answer_dict)
+        print(str(answer_blank.answer))
+        is_correct = 0
         for correct_answer in correct_answer_dict:
-            if str(answer_blank.answer) == str(correct_answer):
-                is_correct = true
+            if str(answer_blank.answer) == str(correct_answer['value']):
+                is_correct = 1
                 break
-        res_row = {'blank_id': correct_answer.blank_id, 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]["value"]}
+        res_row = {'blank_id': correct_answer['blank_id'], 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]['value']}
         response += [res_row]
+        print(response)
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
         flowpage_id = correct_answer_dict[0]["value"]
         order = correct_answer_dict[0]["order"]
