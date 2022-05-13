@@ -392,10 +392,10 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         correct_answer_dict = result.mappings().all()
         print(correct_answer_dict)
         print(str(answer_blank.answer))
-        is_correct = 0
+        is_correct = False
         for correct_answer in correct_answer_dict:
             if str(answer_blank.answer) == str(correct_answer['value']):
-                is_correct = 1
+                is_correct = True
                 break
         res_row = {'blank_id': correct_answer['blank_id'], 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]['value']}
         response += [res_row]
