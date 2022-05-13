@@ -485,7 +485,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
                     content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
                 # yml (image/image.jpg) -> markdawn ![~~](url)
                 for image_id, image_name in id_in_image_name.items():
-                    content = re.sub(f"\(\s*image/{image_name}\s*\)", f"![contentsimage](localhost:8000/get_image/{image_id})", content)
+                    content = re.sub(f"\(\s*image/{image_name}\s*\)", f"![contentsimage](http://localhost:8000/get_image/{image_id})", content)
                 content_id = await add_content(db, content)  # コンテンツの登録
                 block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
                 await add_block_rules(db, block_id)
