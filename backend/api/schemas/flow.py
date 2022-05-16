@@ -83,10 +83,10 @@ class ContentResponse(BaseModel):
     
 class RegisterAnswerResponse(BaseModel):
     is_correct: bool
-    """
+    
     class Config:
         orm_mode = True
-    """
+    
     # commentary: str
     
 # リクエスト用
