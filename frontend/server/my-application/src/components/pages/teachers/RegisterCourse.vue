@@ -315,13 +315,8 @@ export default {
       for(let file of files){
         let filePath = file.webkitRelativePath;
         let fileReader = new FileReader();
-        if(file.type.indexOf("text") != -1 || file.type.indexOf("yaml") != -1){
-          fileReader.onload = function(e){
-            console.log(e.target.result)
-            fileForUpload.push({file_path:filePath,file_text:e.target.result})
-          }
-          fileReader.readAsText(file)
-        }else{
+        console.log("file type: "+file.type)
+        if(file.type.indexOf("image") != -1){
           fileReader.onload = function(e){
             let result = ""
             let int8_array = new Uint8Array(e.target.result);
@@ -340,6 +335,12 @@ export default {
             fileForUpload.push({file_path:filePath,file_text:result})
           }
           fileReader.readAsArrayBuffer(file)
+        }else{
+          fileReader.onload = function(e){
+            console.log(e.target.result)
+            fileForUpload.push({file_path:filePath,file_text:e.target.result})
+          }
+          fileReader.readAsText(file)
         }
       }
       this.files = fileForUpload;
