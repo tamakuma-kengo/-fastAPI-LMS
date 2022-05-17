@@ -400,14 +400,12 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         response += [res_row]
         # print(response) # デバッグ用
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
-        flowpage_id = correct_answer_dict[0]["value"]
-        order = correct_answer_dict[0]["order"]
         update_iscorrect: Result = await(
             db.execute(
                 update(flow_session_model.FlowSessionFlowPage)
                 .where(flow_session_model.FlowSessionFlowPage.flow_session_id == answer_blank.flow_session_id)
                 .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flowpage_id)
-                .where(flow_session_model.FlowSessionFlowPage.order == order)
+                .where(flow_session_model.FlowSessionFlowPage.order == answer_blank.page_num)
                 .values(is_correct = is_correct)
             )
         )
