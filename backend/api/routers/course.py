@@ -91,6 +91,7 @@ async def get_image(image_id:int):
 @router.get("/get_image/{image_id}", response_model=image_schema.ImageResponse)
 async def get_image(image_id:int, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
     if user.is_active:
-        image_stream = io.BytesIO(await image_crud.get_image(db=db, image_id=image_id))
-        return StreamingResponse(content=image_stream, media_type="image/png")
+        img_bin = await image_crud.get_image(db=db, image_id=image_id)
+        image_stream = io.BytesIO(img_bin.decode('unicode_escape').encode("raw_unicode_escape"))
+    return StreamingResponse(content=image_stream, media_type="image/png")
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
