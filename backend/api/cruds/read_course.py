@@ -144,6 +144,7 @@ async def select_taking_users(db: AsyncSession, course_id:int, user: user_schema
         )
     )
     return result.all()
+    
 async def get_taking_courses(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
     taking_courses = await select_taking_course(db=db,email=authed_token.email)
     return taking_courses

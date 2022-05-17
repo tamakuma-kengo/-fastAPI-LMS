@@ -9,9 +9,6 @@ import api.models.image as image_model
 import api.schemas.image as image_schema
 
 
-
-
-
 async def select_image(db:AsyncSession, image_id: int) -> image_schema.ImageResponse:
     result: Result = await(
         db.execute(
