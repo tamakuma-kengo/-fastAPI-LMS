@@ -17,7 +17,12 @@
           </v-row>
           <v-row align="end" justify="end">
             <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
-            <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="is_correct.length>0">
+            <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="is_correct=='正解'">
+              <v-row>
+                {{is_correct}}
+              </v-row>
+            </div>
+            <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="is_correct=='不正解'">
               <v-row>
                 {{is_correct}}
               </v-row>
@@ -50,7 +55,7 @@ export default {
   },
   data: () => ({
     blank_answer: {},
-    is_correct: {},
+    is_correct: "",
     is_registered: {},
   }),
   methods:{
@@ -75,11 +80,11 @@ export default {
       axios.post(`http://localhost:8000/register_blank_answer`, params, config)
       .then(function(response){
         console.log(response.data)
-        self.is_correct = []
+        self.is_correct = ""
         if(response.data[0]["is_correct"] == true){
-          self.is_correct.push('正解')
+          self.is_correct='正解'
         }else{
-          self.is_correct.push('不正解')
+          self.is_correct='不正解'
         }
       }).catch(
         function(error){
