@@ -390,15 +390,15 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
         )
         # 解答と正答の比較
         correct_answer_dict = result.mappings().all()
-        print(correct_answer_dict) #デバッグ用
-        print(str(answer_blank.answer)) # デバッグ用
+        # print(correct_answer_dict) #デバッグ用
+        # print(str(answer_blank.answer)) # デバッグ用
         is_correct = False
         for correct_answer in correct_answer_dict:
             if str(answer_blank.answer) == str(correct_answer['value']):
                 is_correct = True
         res_row = {'blank_id': correct_answer['blank_id'], 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]['value']}
         response += [res_row]
-        print(response) # デバッグ用
+        # print(response) # デバッグ用
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
         flowpage_id = correct_answer_dict[0]["value"]
         order = correct_answer_dict[0]["order"]
@@ -412,7 +412,7 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
             )
         )
     await db.commit()
-    print(type(is_correct)) # デバッグ用
+    # print(type(is_correct)) # デバッグ用
     return response
 
 async def is_readable_flow(db: AsyncSession, flow_id: int, user: User):
