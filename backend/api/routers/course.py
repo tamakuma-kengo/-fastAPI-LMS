@@ -73,21 +73,6 @@ async def get_course_taking(course_id:int, user:User=Depends(get_current_active_
 async def register_taking_student(register_taking_course_request: course_schema.RegisterTakingCourseRequest, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
     return await update_course_crud.register_taking_student(db=db, user=user, register_taking_course_request=register_taking_course_request)
 
-"""
-@router.get("/get_image/{image_id}", response_model=image_schema.ImageResponse)
-async def get_image(image_id:int, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
-    if user.is_active:
-        return await image_crud.get_image(db=db, image_id=image_id)
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
-
-
-@router.get("/get_image/{image_id}")
-async def get_image(image_id:int):
-    image1 = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\n\x00\x00\x00\n\x08\x02\x00\x00\x00\x02PX\xea\x00\x00\x00cIDATx\x9c}\xce\xb1\r\xc0 \x0c\x04@\x87\xca%%\xa5\xbd\x19%[0\nl\x01\xdb}\n#\x82\x08\xc9\x97\x7f\x96\xf5\x17\x00\xfa\x8e\xfb\xb1\x9d{\xef\xaa\xaa\xaa\xb5\xd6Q\x01\x00\xd0Z\x13\x91y\xc7\xcc\xd6\x93\x99\xf7~}\x93Rz8\x84p\xb4\xc1G8\xb0\x88\x94Rvf\xe6\xf7(\x8b#\xa2\x9c\xf3\xe4\x18\xe3\xba\xe3\x06U,fny:h\x00\x00\x00\x00\x00IEND\xaeB`\x82'
-    image_stream = io.BytesIO(image1)
-    return StreamingResponse(content=image_stream, media_type="image/png")
-"""
-
 @router.get("/get_image/{image_id}", response_model=image_schema.ImageResponse)
 async def get_image(image_id:int, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
     if user.is_active:

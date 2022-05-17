@@ -205,7 +205,6 @@ class YamlFormatter():
                 if not re.match('.*\.(jpeg|jpg|png)$',image_name):
                     error_msg += f"{image_name} is not yml_file\n"
                 image_data = self.directory_structure[self.root_directory]["images"][image_name]
-                ## class str ->bytes
                 self.image_dict[image_name] = image_data.encode()
         
         
@@ -447,7 +446,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
     await add_course_grant(db, registered_course, user_with_grant)
 
 
-    # imageの追加
+    # 画像の追加
     id_in_image_name = {}
     for image_name,image_data in image_dict.items():
         image_id = await add_image(db, image_name, image_data)

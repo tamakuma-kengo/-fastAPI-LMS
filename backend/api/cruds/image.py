@@ -20,11 +20,9 @@ async def select_image(db:AsyncSession, image_id: int) -> image_schema.ImageResp
             ).where(image_model.Image.id == image_id)
         )
     )
-    # imgdataのみ受け取る 値は(b'\x00JPG\00\00, ,)のように返される
     return result.first()
 
 async def get_image(db:AsyncSession, image_id:int):
     image_responce = await select_image(db=db, image_id=image_id)
     image_only = image_responce[0]
-    ## class bytes
     return image_only
