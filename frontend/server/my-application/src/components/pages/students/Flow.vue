@@ -59,6 +59,11 @@
               Start New Flow Session
             </v-btn>
           </v-row>
+          <v-row class="mt-8">
+            <v-btn depressed color="primary" @click="go_to_course()">
+              Go To Course
+            </v-btn>
+          </v-row>
         </v-container>
       </v-container>
     </v-responsive>
@@ -109,6 +114,15 @@ export default {
               console.log(error.response)
             }
           )
+          axios.get(`http://localhost:8000/get_course/${self.course_id}`, {withCredentials: true})
+          .then(function(response){
+            console.log(response.data)
+            self.course = response.data
+          }).catch(
+            function(error){
+              console.log(error.response)
+            }
+          )
         }).catch(
           function(error)  {
             if(error.response.status == 401){
@@ -125,7 +139,8 @@ export default {
     username : "",
     is_creater : false,
     markdown:  "# Hello World",
-    flow_sessions: []
+    flow_sessions: [],
+    course: {}
   }),
   methods:{
       markdownToHtml(md){
@@ -139,7 +154,6 @@ export default {
           },
           withCredentials: true
         };
-        let self = this;
         axios.post(`http://localhost:8000/start_new_flow_session`, params, config)
           .then(function(response){
             console.log(response.data)
@@ -151,6 +165,9 @@ export default {
               console.log(error)
             }
           )
+      },
+      go_to_course(){
+        this.$router.push({name:'Course', params: {course_id:this.course_id}})
       },
       restart_flow_session(flow_session_id){
         this.$router.push({name:'FlowSession', params: {flow_session_id: flow_session_id, page_num: 1}})
