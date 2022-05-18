@@ -19,17 +19,22 @@
           </v-row>
           <v-row align="end" justify="end">
             <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
-              <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="is_correct=='正解'">
-                <v-row>
-                  {{is_correct}}
-                </v-row>
-              </div>
-              <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="is_correct=='不正解'">
-                <v-row>
-                  {{is_correct}}
-                </v-row>
-              </div>
             </v-row>
+        </div>
+      </v-container>
+      <v-container class="pa-0 mt-4">
+        <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="is_correct=='正解です！！'">
+          <v-row>
+            {{is_correct}}
+          </v-row>
+        </div>
+        <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="is_correct=='不正解です'">
+          <v-row>
+            {{is_correct}}
+          </v-row>
+          <v-row>
+            解説：数列の和の公式を確認しよう！！
+          </v-row>
         </div>
       </v-container>
     </v-container>
@@ -137,9 +142,9 @@ export default {
         console.log(response.data.length)
         // 全問正解なら正解と表示
         if(response.data.length==self.cnt){
-          self.is_correct="正解"
+          self.is_correct="正解です！！"
         }else{
-          self.is_correct="不正解"
+          self.is_correct="不正解です"
         }
       }).catch(
         function(error){
