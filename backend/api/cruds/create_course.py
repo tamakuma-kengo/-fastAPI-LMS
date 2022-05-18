@@ -12,6 +12,7 @@ import api.models.block as block_model
 import api.models.flow as flow_model
 import api.models.page_group as page_group_model
 import api.models.flow_page as flow_page_model
+import api.models.image as image_model
 
 
 import api.schemas.content as content_schema
@@ -20,6 +21,7 @@ import api.schemas.course as course_schema
 import api.schemas.flow as flow_schema
 import api.schemas.page_group as page_group_schema
 import api.schemas.flowpage as flow_page_schema
+import api.schemas.image as image_schema
 
 import yamale
 import yaml
@@ -32,6 +34,7 @@ class YamlFormatter():
         self.directory_structure = self.create_directry_structure(files)
         self.course_yml_dict = {}
         self.flow_yml_list = []
+        self.image_dict = {}
 
     def create_directry_structure(self,files:List[course_schema.RegisterCourseRequest]):
         directory_structure = {}
@@ -71,6 +74,8 @@ class YamlFormatter():
                 yml_text = re.sub(f'{script[0]}{{{{{script[1]}\s*\({script[2]}\)}}}}',included_yml_with_indent.replace("\\","\\\\"),yml_text)
         return yml_text
 
+
+
     def validate_course(self,yml_text:str):
         validate_error = []
         try:
@@ -83,6 +88,11 @@ class YamlFormatter():
             for link in flow_links:
                 if not link[0] in self.directory_structure[self.root_directory]["flows"]:
                     validate_error += [f"flow_file '{link[0]}' is not found."]
+            # imageリンクの存在チェック
+            image_links = re.findall('\(\s*image\s*:\s*(.+?)\s*\)',yml_text,re.S)
+            for link in image_links:
+                if not link[0] in self.directory_structure[self.root_directory]["images"]:
+                    validate_error += [f"image_file '{link[0]}' is not found."]
         except ValueError as e:
             t = traceback.format_exception_only(type(e),e)
             validate_error += t
@@ -187,6 +197,17 @@ class YamlFormatter():
                 if not course_validation_success:
                     error_msg += "\n".join(flow_validate["error_msgs"])
         
+        ## image_dict {ファイル名：バイナリデータ}の追加
+        course_validation_success = True
+        if "images" in self.directory_structure[self.root_directory]:
+            image_files = self.directory_structure[self.root_directory]["images"].keys()
+            for image_name in image_files:
+                if not re.match('.*\.(jpeg|jpg|png)$',image_name):
+                    error_msg += f"{image_name} is not yml_file\n"
+                image_data = self.directory_structure[self.root_directory]["images"][image_name]
+                self.image_dict[image_name] = image_data.encode()
+        
+        
         ## 書き込み可否
         if course_validation_success and  course_validation_success:
             return {"success":True, "error_msg":error_msg}
@@ -236,6 +257,14 @@ async def add_block_rules(db: AsyncSession,block_id,rules=None):
     row = block_model.BlockRule(**new_block_rule.dict())
     db.add(row)
     return 
+
+async def add_image(db: AsyncSession, image_name: str, image_data: bytes):
+    new_image = image_schema.ImageCreate(name=image_name, imgdata=image_data)
+    row = image_model.Image(**new_image.dict())
+    db.add(row)
+    await db.flush()
+    await db.refresh(row)
+    return row.id
 
 async def add_flow(db: AsyncSession,course_id,flow_dict):
     # コンテンツの登録
@@ -410,11 +439,18 @@ async def add_page_group_flow_pages(db: AsyncSession, page_group_id: int, flowpa
     db.add(row)
     return
 
-async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list) -> course_schema.RegisterCourseResponse:
+async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, register_course_request:course_schema.RegisterCourseRequest,course_dict,flow_yml_list,image_dict) -> course_schema.RegisterCourseResponse:
     # コースの追加
     registered_course = await add_course(db, register_course_request,user_with_grant)
     # コース権限の追加
     await add_course_grant(db, registered_course, user_with_grant)
+
+
+    # 画像の追加
+    id_in_image_name = {}
+    for image_name,image_data in image_dict.items():
+        image_id = await add_image(db, image_name, image_data)
+        id_in_image_name[image_id] = image_name
 
     
     # フローの追加
@@ -440,23 +476,28 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
 
     # コースブロックの追加
     # コンテンツの登録
-    if "content" in course_dict:
-        content = course_dict["content"]
-        for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
-            content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
-        content_id = await add_content(db, content)  # コンテンツの登録
-        block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
-        await add_block_rules(db, block_id)
-    # ブロックの登録
-    else:
-        for block_i, block in enumerate(course_dict["blocks"]):
-            content_id = await add_content(db, block["content"])    # コンテンツの登録
-            block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
-            # ブロックルールの登録
-            if "rules" in block:
-                await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+    for course_list in course_dict.values():
+        for course_list_dict in course_list:
+            if "content" in course_list_dict.keys():
+                content = course_list_dict["content"]
+                for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
+                    content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
+                # yml (image/image.jpg) -> markdawn ![~~](url)
+                for image_id, image_name in id_in_image_name.items():
+                    content = re.sub(f"\(\s*image/{image_name}\s*\)", f"![contentsimage](http://localhost:8000/get_image/{image_id})", content)
+                content_id = await add_content(db, content)  # コンテンツの登録
+                block_id = await add_block(db, course_id=registered_course.id,content_id=content_id,order=0)   # ブロックの登録
+                await add_block_rules(db, block_id)
+            # ブロックの登録
             else:
-                await add_block_rules(db=db, block_id=block_id)
+                for block_i, block in enumerate(course_dict["blocks"]):
+                    content_id = await add_content(db, block["content"])    # コンテンツの登録
+                    block_id = await add_block(db=db, course_id=registered_course.id,content_id=content_id,order=block_i) # ブロックの登録
+                    # ブロックルールの登録
+                    if "rules" in block:
+                        await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
+                    else:
+                        await add_block_rules(db=db, block_id=block_id)
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}
@@ -465,6 +506,6 @@ async def register_course(user_with_grant:UserWithGrant, register_course_request
     yaml_formatter = YamlFormatter(register_course_request.course_files)
     validate_result = yaml_formatter.validate_files()
     if validate_result["success"]:
-        result = await add_course_file(db, user_with_grant, register_course_request,yaml_formatter.course_yml_dict,yaml_formatter.flow_yml_list)
+        result = await add_course_file(db, user_with_grant, register_course_request,yaml_formatter.course_yml_dict,yaml_formatter.flow_yml_list,yaml_formatter.image_dict)
         return result
     return validate_result

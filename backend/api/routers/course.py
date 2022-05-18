@@ -1,3 +1,4 @@
+import io
 from os import isatty
 from typing import List,Optional
 from urllib import response
@@ -6,15 +7,19 @@ from api.schemas.user import User, UserWithGrant
 from api.cruds.user import get_current_active_user
 from api.schemas.user import HomeUserProfile
 
-from fastapi import APIRouter,Depends,HTTPException,status
+from fastapi import APIRouter,Depends,HTTPException,status,Response
+from fastapi.responses import StreamingResponse
 from fastapi.exceptions import HTTPException
 from sqlalchemy.ext.asyncio.session import AsyncSession
 import api.schemas.course as course_schema
 import api.schemas.user as user_schema
+import api.schemas.image as image_schema
 import api.models.course as course_model
 import api.cruds.create_course as create_course_crud
 import api.cruds.read_course as read_course_crud
+import api.cruds.image as image_crud
 import api.cruds.update_course as update_course_crud
+
 
 
 from api.db import get_db
@@ -67,3 +72,11 @@ async def get_course_taking(course_id:int, user:User=Depends(get_current_active_
 @router.post("/register_taking_student/", response_model=course_schema.RegisterTakingCourseResponse)
 async def register_taking_student(register_taking_course_request: course_schema.RegisterTakingCourseRequest, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
     return await update_course_crud.register_taking_student(db=db, user=user, register_taking_course_request=register_taking_course_request)
+
+@router.get("/get_image/{image_id}", response_model=image_schema.ImageResponse)
+async def get_image(image_id:int, user:User=Depends(get_current_active_user), db:AsyncSession=Depends(get_db)):
+    if user.is_active:
+        img_bin = await image_crud.get_image(db=db, image_id=image_id)
+        image_stream = io.BytesIO(img_bin.decode('unicode_escape').encode("raw_unicode_escape"))
+    return StreamingResponse(content=image_stream, media_type="image/png")
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
