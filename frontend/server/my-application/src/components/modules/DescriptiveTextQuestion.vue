@@ -12,12 +12,12 @@
               outlined
               background-color="white"
               name="input-7-4"
-              label="解答を入力"
+              label="回答を入力"
               v-model="blank_answer[page_content.blank_id]"
             ></v-textarea>
           </v-row>
           <v-row align="end" justify="end">
-            <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
+            <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
           </v-row>
         </div>
       </v-container>

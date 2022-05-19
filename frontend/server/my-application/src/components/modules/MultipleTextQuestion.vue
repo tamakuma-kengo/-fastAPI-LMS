@@ -12,13 +12,13 @@
             <v-text-field
               v-if="answer_column.type=='blank'"
               background-color="white"
-              label="解答を入力"
+              label="回答を入力"
               v-model= "blank_answer[answer_column.data]"
               filled
             ></v-text-field>
           </v-row>
           <v-row align="end" justify="end">
-            <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
+            <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
             </v-row>
         </div>
       </v-container>

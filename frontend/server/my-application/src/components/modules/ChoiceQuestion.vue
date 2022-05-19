@@ -16,7 +16,7 @@
             </v-radio-group>
           </v-row>
           <v-row align="end" justify="end">
-            <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
+            <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
           </v-row>
         </div>
       </v-container>
