@@ -9,14 +9,14 @@
         <div :class="`rounded-lg`" class="pa-8 grey lighten-3 text-no-wrap">
           <v-row>
             <v-text-field
-                label="解答を入力"
+                label="回答を入力"
                 background-color="white"
                 v-model="blank_answer[page_content.blank_id]"
                 filled
               ></v-text-field>
           </v-row>
           <v-row align="end" justify="end">
-            <v-btn @click="register_answer()" color="primary" width="100"> 解答する </v-btn>
+            <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
           </v-row>
         </div>
       </v-container>
