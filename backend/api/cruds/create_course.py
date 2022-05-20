@@ -468,7 +468,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
             page_group_id = await add_page_groups(db=db, flow_id=flow_id, order=page_group_i, page_group=page_group)
             print(f"page_group_id: {page_group_id}")
 
-            # ページの追加
+        # ページの追加
             for page_i, page in enumerate(page_group["pages"]):
                 flowpage_id = await add_flow_page(db=db, flow_page=page)
                 # フローグループとページの対応情報を追加
@@ -483,6 +483,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
                 for id_in_yml, flow_id in id_in_yml_flow_id_dict.items():
                     content = re.sub(f"\(\s*flow/{id_in_yml}\s*\)", f"({registered_course.id}/flow/{flow_id})", content)
                 # yml (image/image.jpg) -> markdawn ![~~](url)
+
                 for image_id, image_name in id_in_image_name.items():
                     content = re.sub(f"\(\s*image/{image_name}\s*\)", f"![contentsimage](http://localhost:8000/get_image/{image_id})", content)
                 content_id = await add_content(db, content)  # コンテンツの登録
@@ -498,6 +499,7 @@ async def add_course_file(db: AsyncSession, user_with_grant:UserWithGrant, regis
                         await add_block_rules(db=db, block_id=block_id,rules=block["rules"])
                     else:
                         await add_block_rules(db=db, block_id=block_id)
+
 
     await db.commit()
     return {"success":True,"error_msg":"","registered_course":registered_course}

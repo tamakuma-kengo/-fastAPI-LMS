@@ -1,6 +1,7 @@
 title: str()
 page_type: enum("single_text_question","SingleTextQuestion")
 content: str()
+#commentary: str()
 correct_answer: list(include('answer'))
 ---
 answer:

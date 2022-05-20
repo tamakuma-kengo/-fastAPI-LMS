@@ -80,7 +80,15 @@ class FinishFlowSessionResonse(BaseModel):
 
 class ContentResponse(BaseModel):
     content: str
-
+    
+class RegisterAnswerResponse(BaseModel):
+    is_correct: bool
+    
+    class Config:
+        orm_mode = True
+    
+    # commentary: str
+    
 # リクエスト用
 class StartFlowSessionRequest(BaseModel):
     flow_id: int

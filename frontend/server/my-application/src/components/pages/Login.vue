@@ -20,8 +20,8 @@ export default {
   
   name: "Login",
   data: () => ({
-      email: "yanagi@yanagi.com",
-      password: "yanagiyanagi",
+      email: "neo@neo.com",
+      password: "neoneo",
       email_rules: [
         value => !!value || 'Required.',
       ],

@@ -1,6 +1,7 @@
 title: str()
 page_type: enum("choice_question","ChoiceQuestion")
 content: str()
+#commentary: str()
 correct_choices: list(str())
 choices: list(include('choice'))
 ---
