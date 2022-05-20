@@ -154,6 +154,7 @@ export default {
           },
           withCredentials: true
         };
+        let self = this
         axios.post(`http://localhost:8000/start_new_flow_session`, params, config)
           .then(function(response){
             console.log(response.data)
