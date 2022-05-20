@@ -1,4 +1,7 @@
 # fast-api-lms
+
+## fast-api-lmsの概要・基本機能
+[fast-api-lmsの概要・基本機能](https://github.com/68ymtlab/fast-api-lms/wiki)
 ## 環境の作成
 [インストール手順](https://github.com/68ymtlab/fast-api-lms/wiki/%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95)
 

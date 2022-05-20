@@ -18,6 +18,7 @@
             ></v-text-field>
           </v-row>
           <v-row align="end" justify="end">
+
             <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
             </v-row>
         </div>
@@ -34,6 +35,7 @@
           </v-row>
           <v-row>
             解説：数列の和の公式を確認しよう！！
+
           </v-row>
         </div>
       </v-container>
