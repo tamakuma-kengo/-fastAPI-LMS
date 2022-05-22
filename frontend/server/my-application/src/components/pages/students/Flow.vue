@@ -20,6 +20,9 @@
                   <v-col cols="2" class="text-center">
                     Finished
                   </v-col>
+                  <v-col cols="2" class="text-center">
+                    flow_session_grade
+                  </v-col>
                   <v-col cols="1" class="text-center">
                     Restart
                   </v-col>

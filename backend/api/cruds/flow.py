@@ -188,17 +188,16 @@ async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)-
     print(flow_session_grade)
     res_row = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": flow_session_grade}
     response += [res_row]
+    print(response)
     # flow_session_gradeをdbのupdate文で保存
     update_grade: Result = await(
             db.execute(
                 update(flow_session_model.FlowSessionFlowPage)
                 .where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
-                .where(flow_session_model.FlowSessionFlowPage.flow_session_id == flow_session_id)
                 .values(flow_session_grade = flow_session_grade)
             )
         )
     await db.commit()
-    print(response)
     return response
 
 async def select_simple_page(db: AsyncSession, flowpage_id: int) -> flowpage_schema.PageResponse:
