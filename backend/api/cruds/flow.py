@@ -157,8 +157,9 @@ async def select_flow_session_by_id(db: AsyncSession, flow_session_id: int) -> f
     )
     return flow_session_model.FlowSession(**result.first())
 
-async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int):
+async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)->List[flow_schema.FlowSessionResponse]:
     finish_date_time = datetime.datetime.now()
+    response =[]
     result: Result = await(
         db.execute(
             update(flow_session_model.FlowSession)
@@ -166,8 +167,39 @@ async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int):
             .values(is_finished=True,finish_date_time=finish_date_time)
         )
     )
+    # flowsession_idとis_correctを参照して持ってくる
+    grade_result: Result = await(
+        db.execute(
+            select(            
+                flow_session_model.FlowSessionFlowPage.flow_session_id,
+                flow_session_model.FlowSessionFlowPage.is_correct
+            ).where(flow_session_model.FlowSessionFlowPage.flow_session_id==flow_session_id)
+        )
+    )
+    is_correct_dict = grade_result.mappings().all()
+    print(is_correct_dict) # デバッグ用
+    # 正答率を求める処理
+    cnt = 0
+    flow_session_grade = 0.0
+    for i in range(len(is_correct_dict)):
+        if is_correct_dict[i]['is_correct'] == True:
+            cnt += 1
+    flow_session_grade = (cnt/len(is_correct_dict))*100 
+    print(flow_session_grade)
+    res_row = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": flow_session_grade}
+    response += [res_row]
+    # flow_session_gradeをdbのupdate文で保存
+    update_grade: Result = await(
+            db.execute(
+                update(flow_session_model.FlowSessionFlowPage)
+                .where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
+                .where(flow_session_model.FlowSessionFlowPage.flow_session_id == flow_session_id)
+                .values(flow_session_grade = flow_session_grade)
+            )
+        )
     await db.commit()
-    return {"finish_success": True, "finish_date_time": finish_date_time}
+    print(response)
+    return response
 
 async def select_simple_page(db: AsyncSession, flowpage_id: int) -> flowpage_schema.PageResponse:
     result: Result = await(
