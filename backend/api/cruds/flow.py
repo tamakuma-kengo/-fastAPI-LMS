@@ -192,8 +192,8 @@ async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)-
     # flow_session_gradeをdbのupdate文で保存
     update_grade: Result = await(
             db.execute(
-                update(flow_session_model.FlowSessionFlowPage)
-                .where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
+                update(flow_session_model.FlowSession)
+                .where(flow_session_model.FlowSession.id == flow_session_id)
                 .values(flow_session_grade = flow_session_grade)
             )
         )
