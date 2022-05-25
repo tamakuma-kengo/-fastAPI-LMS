@@ -35,7 +35,6 @@
           </v-row>
           <v-row>
             解説：数列の和の公式を確認しよう！！
-
           </v-row>
         </div>
       </v-container>
