@@ -140,10 +140,12 @@ export default {
             self.cnt ++
           }
         }
+        console.log("正解数")
         console.log(self.cnt)
+        console.log("回答数")
         console.log(response.data.length)
         // 全問正解なら正解と表示
-        if(response.data.length==self.cnt){
+        if(response.data.length==self.cnt && self.cnt != 0){
           self.is_correct="正解です！！"
         }else{
           self.is_correct="不正解です"

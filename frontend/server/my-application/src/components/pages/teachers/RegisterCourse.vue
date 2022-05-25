@@ -1,6 +1,13 @@
 <template>
     <v-container v-if="isCreater">
       <v-responsive :max-width="800" class="mx-auto">
+        <v-container>
+        <v-banner height="100" :class="['text-h5']">{{course.course_name}}
+          <v-row justify="end">
+            <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
+          </v-row>
+        </v-banner>
+      </v-container>
         <v-container class="mt-8">
           <h2>新規コースの登録</h2>
           <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="error_msgs.length>0">
@@ -266,6 +273,27 @@ export default {
     endDateTime: "",
   }),
   methods:{
+    logout: function(){
+      let self = this
+      axios.get("http://localhost:8000/home_profile", {withCredentials: true})
+      .then(function(response){
+        if(response.data.is_active){
+          self.go_login_page()
+        }
+      }).catch(
+        function(error){
+          console.log(error)
+          if(error.response.status == 401){
+            self.$router.push({name:'Login'})
+          }else{
+            console.log(error.response)
+          }
+        }
+      )
+    },
+    go_login_page: function(){
+      this.$router.push({name:'Login'})
+    },
     move_to_course_info(course_id){
       this.$router.push({name:'CourseInfo', params: {course_id: course_id}})
     },

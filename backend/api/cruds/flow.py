@@ -398,6 +398,7 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
                 is_correct = True
         res_row = {'blank_id': correct_answer['blank_id'], 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]['value']}
         response += [res_row]
+        print('レスポンス')
         print(response) # デバッグ用
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
         update_iscorrect: Result = await(

@@ -2,6 +2,13 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
+        <v-banner height="100" :class="['text-h5']">{{course.course_name}}
+          <v-row justify="end">
+            <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
+          </v-row>
+        </v-banner>
+      </v-container>
+      <v-container>
         <v-row justify="end">
           <v-responsive :max-width="300">
             <v-container>
@@ -98,6 +105,27 @@ export default {
     courses: {},
   }),
   methods:{
+      logout: function(){
+        let self = this
+        axios.get("http://localhost:8000/home_profile", {withCredentials: true})
+        .then(function(response){
+          if(response.data.is_active){
+            self.go_login_page()
+          }
+        }).catch(
+          function(error){
+            console.log(error)
+            if(error.response.status == 401){
+              self.$router.push({name:'Login'})
+            }else{
+              console.log(error.response)
+            }
+          }
+        )
+      },
+      go_login_page: function(){
+        this.$router.push({name:'Login'})
+      },
       add_course(){
         this.$router.push({name:'RegisterCourse'})
       },
