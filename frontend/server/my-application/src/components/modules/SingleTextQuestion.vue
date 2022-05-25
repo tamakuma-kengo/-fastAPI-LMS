@@ -86,16 +86,11 @@ export default {
       axios.post(`http://localhost:8000/register_blank_answer`, params, config)
       .then(function(response){
         console.log(response.data)
-        self.is_correct =""
-        self.cnt = 0 // 正解の数をカウント
+        self.is_correct = ""
         if(response.data[0]["is_correct"] == true){
-            self.cnt ++
-        }
-        // 全問正解なら正解と表示
-        if(response.data.length==self.cnt){
-          self.is_correct="正解です！！"
+          self.is_correct='正解です！！'
         }else{
-          self.is_correct="不正解です"
+          self.is_correct='不正解です'
         }
       }).catch(
         function(error){

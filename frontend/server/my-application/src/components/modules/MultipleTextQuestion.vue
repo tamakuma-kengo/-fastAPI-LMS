@@ -131,6 +131,7 @@ export default {
       let self = this
       axios.post(`http://localhost:8000/register_blank_answer`, params, config)
       .then(function(response){
+        console.log(response)
         console.log(response.data)
         self.is_correct =""
         self.cnt = 0 // 正解の数をカウント
