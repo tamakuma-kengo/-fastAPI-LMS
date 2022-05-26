@@ -37,6 +37,9 @@
                   <v-col cols="3" v-if="flow_session.finish_date_time" class="text-center">
                     {{flow_session.finish_date_time}}
                   </v-col>
+                  <v-col cols="3" v-else class="text-center">
+                    null
+                  </v-col>
                   <v-col cols="2" class="text-center">
                     {{flow_session.is_finished}}
                   </v-col>
