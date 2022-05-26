@@ -68,6 +68,9 @@ class FlowSessionResponse(BaseModel):
     start_date_time: datetime
     finish_date_time: Optional[datetime]
     is_finished: bool
+    flow_session_grade: float
+    class Config:
+        orm_mode = True
 
 class StartFlowSessionResonse(BaseModel):
     start_success: bool
