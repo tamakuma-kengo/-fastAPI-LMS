@@ -44,7 +44,7 @@
                     {{flow_session.is_finished}}
                   </v-col>
                   <v-col cols="2" class="text-center">
-                    {{flow_session.flow_session_grade.toFixed(1)}}%%
+                    {{flow_session.flow_session_grade.toFixed(1)}}%
                   </v-col>
                   <v-col cols="1" class="text-center pa-1" >
                     <v-btn @click="restart_flow_session(flow_session.id)" small>
