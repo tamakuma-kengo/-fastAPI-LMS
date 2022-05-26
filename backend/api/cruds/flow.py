@@ -93,7 +93,8 @@ async def select_flow_sessions(db: AsyncSession,flow_id: int, user_id: int) -> L
                 flow_session_model.FlowSession.id,
                 flow_session_model.FlowSession.start_date_time,
                 flow_session_model.FlowSession.finish_date_time,
-                flow_session_model.FlowSession.is_finished
+                flow_session_model.FlowSession.is_finished,
+                flow_session_model.FlowSession.flow_session_grade
             ).where(flow_session_model.FlowSession.user_id == user_id)
             .where(flow_session_model.FlowSession.flow_id == flow_id)
         )
@@ -157,7 +158,7 @@ async def select_flow_session_by_id(db: AsyncSession, flow_session_id: int) -> f
     )
     return flow_session_model.FlowSession(**result.first())
 
-async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)->List[flow_schema.FlowSessionResponse]:
+async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)->flow_schema.FlowSessionResponse:
     finish_date_time = datetime.datetime.now()
     response =[]
     result: Result = await(
@@ -180,21 +181,21 @@ async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)-
     print(is_correct_dict) # デバッグ用
     # 正答率を求める処理
     cnt = 0
-    flow_session_grade = 0.0
+    grade = 0.0
     for i in range(len(is_correct_dict)):
         if is_correct_dict[i]['is_correct'] == True:
             cnt += 1
-    flow_session_grade = (cnt/len(is_correct_dict))*100 
-    print(flow_session_grade)
-    res_row = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": flow_session_grade}
-    response += [res_row]
+    grade = (cnt/len(is_correct_dict))*100 
+    print(grade)
+    res_row = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": grade}
+    response = res_row
     print(response)
     # flow_session_gradeをdbのupdate文で保存
     update_grade: Result = await(
             db.execute(
                 update(flow_session_model.FlowSession)
                 .where(flow_session_model.FlowSession.id == flow_session_id)
-                .values(flow_session_grade = flow_session_grade)
+                .values(flow_session_grade = grade)
             )
         )
     await db.commit()

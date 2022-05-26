@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-responsive :max-width="1200" class="mx-auto">
+    <v-responsive :max-width="1800" class="mx-auto">
       <v-container>
         <v-subheader :class="['text-h5']">{{flow.title}}</v-subheader>
         <v-responsive >
@@ -11,17 +11,17 @@
                   <v-col cols="1" class="text-center">
                     #
                   </v-col>
-                  <v-col cols="4" class="text-center">
+                  <v-col cols="3" class="text-center">
                     start_datetime
                   </v-col>
-                  <v-col cols="4" class="text-center">
+                  <v-col cols="3" class="text-center">
                     finish_datetime
                   </v-col>
                   <v-col cols="2" class="text-center">
                     Finished
                   </v-col>
                   <v-col cols="2" class="text-center">
-                    flow_session_grade
+                    Grade
                   </v-col>
                   <v-col cols="1" class="text-center">
                     Restart
@@ -31,17 +31,17 @@
                   <v-col cols="1" class="text-center">
                     {{i+1}}
                   </v-col>
-                  <v-col cols="4" class="text-center">
+                  <v-col cols="3" class="text-center">
                     {{flow_session.start_date_time}}
                   </v-col>
-                  <v-col cols="4" v-if="flow_session.finish_date_time" class="text-center">
+                  <v-col cols="3" v-if="flow_session.finish_date_time" class="text-center">
                     {{flow_session.finish_date_time}}
-                  </v-col>
-                  <v-col cols="4" v-if="!flow_session.finish_date_time" class="text-center">
-                    -
                   </v-col>
                   <v-col cols="2" class="text-center">
                     {{flow_session.is_finished}}
+                  </v-col>
+                  <v-col cols="2" class="text-center">
+                    {{flow_session.flow_session_grade}}%
                   </v-col>
                   <v-col cols="1" class="text-center pa-1" >
                     <v-btn @click="restart_flow_session(flow_session.id)" small>
