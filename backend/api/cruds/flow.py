@@ -384,6 +384,7 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
                 ).where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
                 .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flow_page_model.FlowPage.id)
                 .where(flow_page_model.FlowPage.id == flow_page_model.CorrectAnswer.flowpage_id)
+                .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flowpage_id)
                 .where(flow_session_model.FlowSession.id == answer_blank.flow_session_id)
                 .where(flow_page_model.CorrectAnswer.blank_id == answer_blank.blank_id)                 
             )
