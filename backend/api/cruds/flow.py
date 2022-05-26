@@ -160,7 +160,6 @@ async def select_flow_session_by_id(db: AsyncSession, flow_session_id: int) -> f
 
 async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)->flow_schema.FlowSessionResponse:
     finish_date_time = datetime.datetime.now()
-    response =[]
     result: Result = await(
         db.execute(
             update(flow_session_model.FlowSession)
@@ -186,10 +185,7 @@ async def update_to_finish_flow_session(db: AsyncSession, flow_session_id: int)-
         if is_correct_dict[i]['is_correct'] == True:
             cnt += 1
     grade = (cnt/len(is_correct_dict))*100 
-    print(grade)
-    res_row = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": grade}
-    response = res_row
-    print(response)
+    response = {"finish_success": True, "finish_date_time": finish_date_time, "flow_session_grade": grade}
     # flow_session_gradeをdbのupdate文で保存
     update_grade: Result = await(
             db.execute(

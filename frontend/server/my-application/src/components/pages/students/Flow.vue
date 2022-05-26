@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-responsive :max-width="1800" class="mx-auto">
+    <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
         <v-subheader :class="['text-h5']">{{flow.title}}</v-subheader>
         <v-responsive >
@@ -44,7 +44,7 @@
                     {{flow_session.is_finished}}
                   </v-col>
                   <v-col cols="2" class="text-center">
-                    {{flow_session.flow_session_grade}}%
+                    {{flow_session.flow_session_grade.toFixed(1)}}%%
                   </v-col>
                   <v-col cols="1" class="text-center pa-1" >
                     <v-btn @click="restart_flow_session(flow_session.id)" small>
