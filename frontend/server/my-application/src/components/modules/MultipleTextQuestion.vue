@@ -139,9 +139,9 @@ export default {
         console.log(blanklength)
         self.is_correct =""
         console.log(response.data.length)
+        console.log(blanklength)
         // 全問正解なら正解と表示
         if(response.data.length == blanklength){
-        // if(response.data.length==self.cnt && self.cnt >= 2){
           self.is_correct="正解です！！"
         }else{
           self.is_correct="不正解です"
