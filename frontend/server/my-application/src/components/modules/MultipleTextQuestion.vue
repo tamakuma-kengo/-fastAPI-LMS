@@ -67,6 +67,15 @@ export default {
    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
   },
   created: function() {
+    window.MathJax.Hub.Config({
+      tex2jax:{
+        extensions: ["tex2jax.js", "TeX/boldsymbol.js"],
+        messageStyle: "none",
+        inlineMath: [['$','$'],['\\(','\\)']],
+        displayMath: [['$$','$$'],['\\[','\\]']],
+        processEscapes: true
+      }
+    });
     window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
 
     this.parse_md()
