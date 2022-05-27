@@ -2,13 +2,6 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
-        <v-banner height="100" :class="['text-h5']">{{course.course_name}}
-          <v-row justify="end">
-            <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
-          </v-row>
-        </v-banner>
-      </v-container>
-      <v-container>
         <v-row>
           <v-col cols="6">
             <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
@@ -19,7 +12,10 @@
                 <div>
                   {{this.user_info.username}} ( {{this.user_info.email}})<br>
                   {{this.user_info.kind_name}} としてログイン中
-                  </div>
+                </div>
+              </v-row>
+              <v-row justify="end">
+                <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
               </v-row>
             </v-container>
           </v-col>

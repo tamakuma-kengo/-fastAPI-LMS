@@ -1,13 +1,9 @@
 <template>
     <v-container v-if="isCreater">
       <v-responsive :max-width="800" class="mx-auto">
-        <v-container>
-        <v-banner height="100" :class="['text-h5']">{{course.course_name}}
-          <v-row justify="end">
-            <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
-          </v-row>
-        </v-banner>
-      </v-container>
+        <v-row justify="end">
+          <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
+        </v-row>
         <v-container class="mt-8">
           <h2>新規コースの登録</h2>
           <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="error_msgs.length>0">
