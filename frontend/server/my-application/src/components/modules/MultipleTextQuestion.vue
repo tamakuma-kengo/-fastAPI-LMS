@@ -18,7 +18,6 @@
             ></v-text-field>
           </v-row>
           <v-row align="end" justify="end">
-
             <v-btn @click="register_answer()" color="primary" width="100"> 回答する </v-btn>
             </v-row>
         </div>
@@ -131,21 +130,18 @@ export default {
       let self = this
       axios.post(`http://localhost:8000/register_blank_answer`, params, config)
       .then(function(response){
-        console.log(response)
+        //回答欄数を取得
+        const md2 = self.page_content.answer_column_content
+        const regexp2 = /\[\[\s*?.*?\s*?\]\]/g
+        const blanks2 = [...md2.matchAll(regexp2)]
+        var blanklength = blanks2.length
         console.log(response.data)
+        console.log(blanklength)
         self.is_correct =""
-        self.cnt = 0 // 正解の数をカウント
-        for(let i=0; i< response.data.length; i++){
-          if(response.data[i]["is_correct"] == true){
-            self.cnt ++
-          }
-        }
-        console.log("正解数")
-        console.log(self.cnt)
-        console.log("回答数")
         console.log(response.data.length)
         // 全問正解なら正解と表示
-        if(response.data.length==self.cnt && self.cnt >= 2){
+        if(response.data.length == blanklength){
+        // if(response.data.length==self.cnt && self.cnt >= 2){
           self.is_correct="正解です！！"
         }else{
           self.is_correct="不正解です"
