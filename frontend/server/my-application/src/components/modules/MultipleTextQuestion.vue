@@ -140,8 +140,15 @@ export default {
         self.is_correct =""
         console.log(response.data.length)
         console.log(blanklength)
+        self.cnt = 0 // 正解の数をカウント
+        for(let i=0; i< response.data.length; i++){
+          if(response.data[i]["is_correct"] == true){
+            self.cnt ++
+          }
+        }
+        console.log(self.cnt)
         // 全問正解なら正解と表示
-        if(response.data.length == blanklength){
+        if(self.cnt == blanklength){
           self.is_correct="正解です！！"
         }else{
           self.is_correct="不正解です"
