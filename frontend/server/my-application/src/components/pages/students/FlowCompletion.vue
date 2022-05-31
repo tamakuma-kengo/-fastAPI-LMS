@@ -9,7 +9,7 @@
           </v-row>
           <v-row class="mt-8">
             <v-btn depressed color="primary" @click="move_to_flow_top()">
-              フロートップに戻る
+              演習問題ページのトップに戻る
             </v-btn>
           </v-row>
         </v-container>

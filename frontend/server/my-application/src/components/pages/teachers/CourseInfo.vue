@@ -12,7 +12,10 @@
                 <div>
                   {{this.user_info.username}} ( {{this.user_info.email}})<br>
                   {{this.user_info.kind_name}} としてログイン中
-                  </div>
+                </div>
+              </v-row>
+              <v-row justify="end">
+                <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
               </v-row>
               <v-row justify="end">
                 <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
@@ -91,24 +94,18 @@ export default {
   }),
   methods:{
     logout: function(){
-      let self = this
-      axios.get("http://localhost:8000/home_profile", {withCredentials: true})
-      .then(function(response){
-        if(response.data.is_active){
-          self.go_login_page()
-        }
-      }).catch(
-        function(error){
-          console.log(error)
-          if(error.response.status == 401){
-            self.$router.push({name:'Login'})
-          }else{
-            console.log(error.response)
-          }
-        }
-      )
+      try{
+        const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
+        console.log(res.data)
+        this.moveToLogin()
+      }catch(error){
+        const {status,statusText} = error.response;
+        if(status == 401)
+          this.moveToLogin()
+        console.log(status,statusText)
+      }
     },
-    go_login_page: function(){
+    moveToLogin: function(){
       this.$router.push({name:'Login'})
     },
     move_to_course_taking(){

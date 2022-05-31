@@ -8,7 +8,7 @@
         </v-row>
         <v-row align="center" justify="space-around" >
             <v-btn depressed color="primary" @click="login()" value="POST">
-                Login
+                ログイン
             </v-btn>
         </v-row>
     </v-container>
