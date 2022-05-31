@@ -47,7 +47,7 @@
 import axios from "axios";
 
 export default {
-  name: "Home",
+  name: "RegisterCoruse",
   created: function() {
     let self = this
     axios.get("http://localhost:8000/users/creater", {withCredentials: true})
