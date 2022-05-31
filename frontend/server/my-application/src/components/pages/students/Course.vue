@@ -4,7 +4,7 @@
       <v-container>
         <v-banner height="100" :class="['text-h5']">{{course.course_name}}
           <v-row justify="end">
-            <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
+            <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
           </v-row>
         </v-banner>
         <v-container>
