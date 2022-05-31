@@ -95,24 +95,18 @@ export default {
   }),
   methods:{
     logout: function(){
-      let self = this
-      axios.get("http://localhost:8000/home_profile", {withCredentials: true})
-      .then(function(response){
-        if(response.data.is_active){
-          self.go_login_page()
-        }
-      }).catch(
-        function(error){
-          console.log(error)
-          if(error.response.status == 401){
-            self.$router.push({name:'Login'})
-          }else{
-            console.log(error.response)
-          }
-        }
-      )
+      try{
+        const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
+        console.log(res.data)
+        this.moveToLogin()
+      }catch(error){
+        const {status,statusText} = error.response;
+        if(status == 401)
+          this.moveToLogin()
+        console.log(status,statusText)
+      }
     },
-    go_login_page: function(){
+    moveToLogin: function(){
       this.$router.push({name:'Login'})
     },
     move_to_course_taking(){
