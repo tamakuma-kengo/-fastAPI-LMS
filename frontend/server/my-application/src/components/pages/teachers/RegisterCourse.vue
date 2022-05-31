@@ -2,6 +2,9 @@
     <v-container v-if="isCreater">
       <v-responsive :max-width="800" class="mx-auto">
         <v-container class="mt-8">
+          <v-row justify="end">
+            <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
+          </v-row>
           <h2>新規コースの登録</h2>
           <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="error_msgs.length>0">
             <v-row>
@@ -44,7 +47,7 @@
 import axios from "axios";
 
 export default {
-  name: "Home",
+  name: "RegisterCoruse",
   created: function() {
     let self = this
     axios.get("http://localhost:8000/users/creater", {withCredentials: true})
@@ -266,6 +269,21 @@ export default {
     endDateTime: "",
   }),
   methods:{
+    logout: function(){
+        try{
+          const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
+          console.log(res.data)
+          this.moveToLogin()
+        }catch(error){
+          const {status,statusText} = error.response;
+          if(status == 401)
+            this.moveToLogin()
+          console.log(status,statusText)
+        }
+      },
+    moveToLogin: function(){
+      this.$router.push({name:'Login'})
+    },
     move_to_course_info(course_id){
       this.$router.push({name:'CourseInfo', params: {course_id: course_id}})
     },

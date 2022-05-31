@@ -2,12 +2,12 @@
     <v-container class="grey lighten-5">
         <v-row align="center" justify="space-around" @click="go_login_page()">
             <v-btn depressed color="primary" href="/Login">
-                Login
+                ログイン
             </v-btn>
         </v-row>
         <v-row align="center" justify="space-around">
             <v-btn depressed color="primary" href="/Signup">
-                Sign up
+                新しくアカウントを作成
             </v-btn>
         </v-row>
     </v-container>

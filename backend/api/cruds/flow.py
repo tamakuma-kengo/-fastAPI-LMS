@@ -412,21 +412,23 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
                 ).where(flow_session_model.FlowSession.id == flow_session_model.FlowSessionFlowPage.flow_session_id)
                 .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flow_page_model.FlowPage.id)
                 .where(flow_page_model.FlowPage.id == flow_page_model.CorrectAnswer.flowpage_id)
+                .where(flow_session_model.FlowSessionFlowPage.flowpage_id == flowpage_id)
                 .where(flow_session_model.FlowSession.id == answer_blank.flow_session_id)
                 .where(flow_page_model.CorrectAnswer.blank_id == answer_blank.blank_id)                 
             )
         )
         # 解答と正答の比較
         correct_answer_dict = result.mappings().all()
-        # print(correct_answer_dict) #デバッグ用
-        # print(str(answer_blank.answer)) # デバッグ用
+        print(correct_answer_dict) #デバッグ用
+        print(str(answer_blank.answer)) # デバッグ用
         is_correct = False
         for correct_answer in correct_answer_dict:
             if str(answer_blank.answer) == str(correct_answer['value']):
                 is_correct = True
         res_row = {'blank_id': correct_answer['blank_id'], 'is_correct': is_correct, 'correct_answer': correct_answer_dict[0]['value']}
         response += [res_row]
-        # print(response) # デバッグ用
+        print('レスポンス')
+        print(response) # デバッグ用
         # (update文で,flowsessionflowpageのis_correctに保存する ) ここまでの処理で入手した情報を RegisterAnswerResponseでwrapしてreturn する
         update_iscorrect: Result = await(
             db.execute(

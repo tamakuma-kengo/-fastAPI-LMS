@@ -11,6 +11,9 @@
               <v-row>
                 {{this.user_info.kind_name}} としてログイン中
               </v-row>
+              <v-row justify="end">
+                <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
+              </v-row>
             </v-container>
           </v-responsive>
         </v-row>
@@ -98,6 +101,21 @@ export default {
     courses: {},
   }),
   methods:{
+      logout: function(){
+        try{
+          const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
+          console.log(res.data)
+          this.moveToLogin()
+        }catch(error){
+          const {status,statusText} = error.response;
+          if(status == 401)
+            this.moveToLogin()
+          console.log(status,statusText)
+        }
+      },
+      moveToLogin: function(){
+        this.$router.push({name:'Login'})
+      },
       add_course(){
         this.$router.push({name:'RegisterCourse'})
       },

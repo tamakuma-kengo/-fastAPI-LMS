@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import token
 from sqlalchemy import true
 from fastapi import APIRouter, Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -39,6 +40,12 @@ async def login_for_access_token(form_data: FormData, db: AsyncSession = Depends
     content = {"access_token": access_token, "token_type": "bearer"}
     response = JSONResponse(content=content)
     response.set_cookie(key="token", value = access_token, httponly=True)
+    return response
+
+@router.post("/logout")
+async def logout():
+    response = JSONResponse(content={})
+    response.set_cookie(key="token", value="", expires=0, httponly=True)
     return response
 
 @router.get("/users/me/", response_model=User)

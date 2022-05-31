@@ -12,7 +12,10 @@
                 <div>
                   {{this.user_info.username}} ( {{this.user_info.email}})<br>
                   {{this.user_info.kind_name}} としてログイン中
-                  </div>
+                </div>
+              </v-row>
+              <v-row justify="end">
+                <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
               </v-row>
             </v-container>
           </v-col>
@@ -129,6 +132,21 @@ export default {
     end_date_time: "",
   }),
   methods:{
+    logout: function(){
+      try{
+        const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
+        console.log(res.data)
+        this.moveToLogin()
+      }catch(error){
+        const {status,statusText} = error.response;
+        if(status == 401)
+          this.moveToLogin()
+        console.log(status,statusText)
+      }
+    },
+    moveToLogin: function(){
+      this.$router.push({name:'Login'})
+    },
     move_to_course_info(){
       this.$router.push({name:'CourseInfo', params:{"course_id":this.course_id}})
     },

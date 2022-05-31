@@ -11,20 +11,20 @@
                   <v-col cols="1" class="text-center">
                     #
                   </v-col>
-                  <v-col cols="3" class="text-center">
-                    start_datetime
+                  <v-col cols="4" class="text-center">
+                    開始時刻
                   </v-col>
-                  <v-col cols="3" class="text-center">
-                    finish_datetime
+                  <v-col cols="4" class="text-center">
+                    終了時刻
                   </v-col>
                   <v-col cols="2" class="text-center">
-                    Finished
+                    テスト回答済み
                   </v-col>
                   <v-col cols="2" class="text-center">
                     Grade
                   </v-col>
                   <v-col cols="1" class="text-center">
-                    Restart
+                    再スタート
                   </v-col>
                 </v-row>
                 <v-row v-for="(flow_session,i) in this.flow_sessions" :key="flow_session.id" class="pa-0 ma-0" no-gutters>
@@ -62,12 +62,12 @@
           </v-row>
           <v-row class="mt-8">
             <v-btn depressed color="primary" @click="start_new_flow_session()">
-              Start New Flow Session
+              演習問題を開始
             </v-btn>
           </v-row>
           <v-row class="mt-8">
             <v-btn depressed color="primary" @click="go_to_course()">
-              Go To Course
+              教科書ページに戻る
             </v-btn>
           </v-row>
         </v-container>
