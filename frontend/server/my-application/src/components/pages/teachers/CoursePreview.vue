@@ -2,20 +2,23 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
-        <v-row justify="end">
-          <v-responsive :max-width="300">
-            <v-container>
-              <v-row>
-                {{this.user_info.username}} ( {{this.user_info.email}} )
-              </v-row>
-              <v-row>
-                {{this.user_info.kind_name}} としてログイン中
+        <v-row>
+          <v-col cols="6">
+            <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
+          </v-col>
+          <v-col cols="6">
+            <v-container>  
+              <v-row justify="end">
+                <div>
+                  {{this.user_info.username}} ( {{this.user_info.email}})<br>
+                  {{this.user_info.kind_name}} としてログイン中
+                </div>
               </v-row>
               <v-row justify="end">
                 <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
               </v-row>
             </v-container>
-          </v-responsive>
+          </v-col>
         </v-row>
         <v-row>
         <v-col cols="2">
@@ -29,7 +32,7 @@
           </v-btn>
         </v-col >  
         <v-col cols="2">
-          <v-btn depressed block color="transparent"  class="mb-2">
+          <v-btn @click="move_to_course_preview()" depressed block color="transparent"  class="mb-2">
             プレビュー
           </v-btn>
           <v-divider class="red"></v-divider>
@@ -41,10 +44,9 @@
         </v-col>  
         </v-row>
         <v-divider class="mt-0"></v-divider>
-        <v-row class="mt-5" >
-          <v-col cols="9">
-            <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
-          </v-col>
+        <br>
+        <v-row v-for="block in this.course.blocks" :key="block.order">
+          <div v-html="markdownToHtml(block.content)"></div>
         </v-row>
       </v-container>
     </v-responsive>
@@ -53,6 +55,7 @@
 
 <script>
 import axios from "axios";
+import { marked } from 'marked';
 
 export default {
   name: "Home",
@@ -61,14 +64,34 @@ export default {
   },
   created: function() {
     let self = this
+    window.MathJax.Hub.Config({
+      tex2jax:{
+        extensions: ["tex2jax.js", "TeX/boldsymbol.js"],
+        messageStyle: "none",
+        inlineMath: [['$','$'],['\\(','\\)']],
+        displayMath: [['$$','$$'],['\\[','\\]']],
+        processEscapes: true
+      }
+    })
+    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
     axios.get("http://localhost:8000/home_profile", {withCredentials: true})
         .then(function(response){
           console.log(response.data)
           self.user_info = response.data
           self.is_creater = response.data.create
+          axios.get(`http://localhost:8000/get_course/${self.course_id}`, {withCredentials: true})
+          .then(function(response){
+            console.log(response.data)
+            self.course = response.data
+          }).catch(
+            function(error){
+              console.log(error.response)
+            }
+          )
           if(self.is_creater){
             self.get_course_info()
           }
+          self.add_teachers()
         }).catch(
           function(error)  {
             console.log(error)
@@ -81,13 +104,18 @@ export default {
         )
   },
   data: () => ({
-    
     tab: null,
     user_info : {},
     is_create : false,
     course: {},
   }),
+  mounted() {
+    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+  },
   methods:{
+    markdownToHtml(md){
+      return marked(md);
+    },
     logout: function(){
       try{
         const res = axios.post("http://localhost:8000/logout",{},{withCredentials: true})
@@ -109,6 +137,9 @@ export default {
     move_to_course_taking(){
       this.$router.push({name:'CourseTaking',params:{"course_id":this.course_id}})
     },
+    move_to_course_preview(){
+      this.$router.push({name:'CoursePreview',params:{"course_id":this.course_id}})
+    },
     move_to_course_edit(){
       this.$router.push({name:'CourseEdit',params:{"course_id":this.course_id}})
     },
@@ -128,6 +159,20 @@ export default {
           }
         }
       ) 
+    },
+    add_teachers(){
+    const params = {"course_id":this.course_id, "email":this.user_info.email}
+    console.log(JSON.stringify(params));
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      };
+      axios.post('http://localhost:8000/register_taking_student', params, config)
+      .then(function(response){
+        console.log(response.data)
+      })
     }
   },
 };
