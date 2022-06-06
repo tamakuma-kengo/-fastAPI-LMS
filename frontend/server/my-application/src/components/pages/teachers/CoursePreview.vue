@@ -91,7 +91,6 @@ export default {
           if(self.is_creater){
             self.get_course_info()
           }
-          self.add_teachers()
         }).catch(
           function(error)  {
             console.log(error)
@@ -159,20 +158,6 @@ export default {
           }
         }
       ) 
-    },
-    add_teachers(){
-    const params = {"course_id":this.course_id, "email":this.user_info.email}
-    console.log(JSON.stringify(params));
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true
-      };
-      axios.post('http://localhost:8000/register_taking_student', params, config)
-      .then(function(response){
-        console.log(response.data)
-      })
     }
   },
 };
