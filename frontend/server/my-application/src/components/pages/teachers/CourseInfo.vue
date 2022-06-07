@@ -45,6 +45,11 @@
         </v-row>
         <v-divider class="mt-0"></v-divider>
         <br>
+        <v-row>
+          <v-col>
+            <v-subheader :class="['text-h5']">科目情報</v-subheader>
+          </v-col>
+        </v-row>
         <v-simple-table>
           <thead>
             <tr>
