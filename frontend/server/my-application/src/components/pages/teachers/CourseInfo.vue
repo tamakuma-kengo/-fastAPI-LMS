@@ -17,9 +17,6 @@
               <v-row justify="end">
                 <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
               </v-row>
-              <v-row justify="end">
-                <v-btn text color="grey" @click="logout()" value="POST">logout</v-btn>
-              </v-row>
             </v-container>
           </v-col>
         </v-row>
@@ -44,13 +41,40 @@
           <v-btn @click="move_to_course_edit()" depressed block color="transparent"  class="mb-2">
             編集
           </v-btn>
-        </v-col>  
+        </v-col>
         </v-row>
         <v-divider class="mt-0"></v-divider>
-        <v-row class="mt-5" >
-          
-        </v-row>
-        
+        <v-simple-table>
+          <thead>
+            <tr>
+              <th class="text-left">
+                授業科目区分
+              </th>
+              <th class="text-left">
+                科目名
+              </th>
+              <th class="text-left">
+                単位
+              </th>
+              <th class="text-left">
+                科目コード
+              </th>
+              <th class="text-left">
+                開講時期
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ course_info_syllabus.subject_class }}</td>
+              <td>{{ course_info_syllabus.subject_name }}</td>
+              <td>{{ course_info_syllabus.subject_credit }}</td>
+              <td>{{ course_info_syllabus.subject_code }}</td>
+              <td>{{ course_info_syllabus.subject_period }}</td>
+            </tr>
+          </tbody>
+        </v-simple-table>
+        <v-divider class="mt-0"></v-divider>
       </v-container>
     </v-responsive>
   </v-container>
@@ -75,6 +99,7 @@ export default {
             self.get_course_info()
           }
           self.add_teachers()
+          self.get_course_info_syllabus()
         }).catch(
           function(error)  {
             console.log(error)
@@ -92,6 +117,7 @@ export default {
     user_info : {},
     is_create : false,
     course: {},
+    course_info_syllabus: {},
   }),
   methods:{
     logout: function(){
@@ -148,6 +174,25 @@ export default {
       .then(function(response){
         console.log(response.data)
       })
+    },
+    get_course_info_syllabus(){
+      let self = this
+      axios.get(`http://localhost:8000/get_course_info_syllabus/${self.course_id}`, {withCredentials: true})
+        .then(function(response){
+          console.log(response.data)
+          for(const response_dict of response.data){
+            self.course_info_syllabus = response_dict
+          }
+        }).catch(
+          function(error){
+            console.log(error)
+            if(error.response.status == 401){
+              self.$router.push({name:'Signup'})
+            }else{
+              console.log(error.response)
+            }
+          }
+        )
     }
   },
 };
