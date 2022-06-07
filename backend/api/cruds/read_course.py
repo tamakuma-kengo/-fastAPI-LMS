@@ -144,7 +144,22 @@ async def select_taking_users(db: AsyncSession, course_id:int, user: user_schema
         )
     )
     return result.all()
-    
+
+async def select_course_info_syllabus(db:AsyncSession, course_id:int) -> course_schema.CourseInfoSyllabusResponse:
+    result: Result = await(
+        db.execute(
+            select(
+                course_model.CourseInfoSyllabus.course_id,
+                course_model.CourseInfoSyllabus.subject_class,
+                course_model.CourseInfoSyllabus.subject_name,
+                course_model.CourseInfoSyllabus.subject_credit,
+                course_model.CourseInfoSyllabus.subject_code,
+                course_model.CourseInfoSyllabus.subject_period,
+            ).where(course_model.CourseInfoSyllabus.course_id == course_id)
+        )
+    )
+    return result.all()
+
 async def get_taking_courses(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
     taking_courses = await select_taking_course(db=db,email=authed_token.email)
     return taking_courses
@@ -167,4 +182,8 @@ async def get_course(db:AsyncSession, course_id:int):
 async def get_taking_users(db:AsyncSession, user:user_schema.User, course_id:int):
     taking_users_response = await select_taking_users(db=db, user=user, course_id=course_id)
     return taking_users_response
+
+async def get_course_info_syllabus(db:AsyncSession,course_id:int):
+    course_info_syllabus_response = await select_course_info_syllabus(db=db, course_id=course_id)
+    return course_info_syllabus_response
 
