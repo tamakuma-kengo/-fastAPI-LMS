@@ -44,6 +44,7 @@
         </v-col>
         </v-row>
         <v-divider class="mt-0"></v-divider>
+        <br>
         <v-simple-table>
           <thead>
             <tr>
@@ -79,6 +80,12 @@
     </v-responsive>
   </v-container>
 </template>
+<style>
+table thead tr th {
+	color: #fff;
+	background: #d0eafd;
+}
+</style>
 
 <script>
 import axios from "axios";
