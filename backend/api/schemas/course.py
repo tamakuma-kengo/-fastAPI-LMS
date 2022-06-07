@@ -128,8 +128,6 @@ class CourseInfoSyllabusResponse(BaseModel):
     subject_code: str
     subject_period: str
 
-    class Config:
-        orm_mode = True
 
 # コース情報を登録するスキーマ
 class CourseInfoSyllabusCreate(BaseModel):
