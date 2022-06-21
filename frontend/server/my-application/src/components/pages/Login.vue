@@ -4,7 +4,15 @@
             <v-text-field :rules="email_rules" label="email" v-model="email"></v-text-field>
         </v-row>
         <v-row align="center" justify="space-around" >
-            <v-text-field :rules="password_rules" label="password" v-model="password"></v-text-field>
+            <v-text-field 
+            :append-icon="pswd ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="password_rules" 
+            :type="pswd ? 'text' : 'password'"
+            label="password" 
+            class="input-group--focused"
+            @click:append="pswd = !pswd"
+            v-model="password"
+            ></v-text-field>
         </v-row>
         <v-row align="center" justify="space-around" >
             <v-btn depressed color="primary" @click="login()" value="POST">
@@ -20,6 +28,7 @@ export default {
   
   name: "Login",
   data: () => ({
+      pswd: false,
       email: "neo@neo.com",
       password: "neoneo",
       email_rules: [
