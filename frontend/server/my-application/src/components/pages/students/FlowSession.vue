@@ -19,6 +19,7 @@
               </v-col>
               <v-col class="d-flex align-end flex-column">
                 <v-btn @click="go_next_page()" v-if="this.page_num < this.num_of_pages"> 次のページ </v-btn>
+                <v-btn @click="finish_flow_session()" v-if="this.page_num == this.num_of_pages"> 終了 </v-btn>
               </v-col>
             </v-row>
           </v-container>
@@ -117,8 +118,23 @@ export default {
     go_next_page(){
       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: this.page_num+1, blank_answers: this.blank_answers}})
     },
-    
-
+    finish_flow_session(){
+      const params = {"flow_session_id": this.flow_session_id}
+      const config = {headers: {'Content-Type': 'application/json'},withCredentials: true};
+      let self = this
+      axios.post(`http://localhost:8000/finish_flow_session`, params, config)
+      .then(function(response){
+        console.log(response.data)
+        self.go_flow_completion_page()
+      }).catch(
+        function(error){
+          console.log(error)
+        }
+      )
+    },
+    go_flow_completion_page(){
+      this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})
+    }
   },
 };
 </script>

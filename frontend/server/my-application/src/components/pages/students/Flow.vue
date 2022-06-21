@@ -11,10 +11,10 @@
                   <v-col cols="1" class="text-center">
                     #
                   </v-col>
-                  <v-col cols="4" class="text-center">
+                  <v-col cols="3" class="text-center">
                     開始時刻
                   </v-col>
-                  <v-col cols="4" class="text-center">
+                  <v-col cols="3" class="text-center">
                     終了時刻
                   </v-col>
                   <v-col cols="2" class="text-center">
