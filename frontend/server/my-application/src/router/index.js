@@ -102,7 +102,7 @@ const routes = [
     props: true,
   },
   {
-    path: "/t/CoursePreview:course_id",
+    path: "/t/CoursePreview/:course_id",
     name: "CoursePreview",
     component: CoursePreview,
     props: true,

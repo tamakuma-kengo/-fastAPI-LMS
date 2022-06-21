@@ -36,7 +36,7 @@
           <v-divider class="red"></v-divider>
         </v-col >  
         <v-col cols="2">
-          <v-btn depressed block color="transparent"  class="mb-2">
+          <v-btn @click="move_to_course_preview()" depressed block color="transparent"  class="mb-2">
             プレビュー
           </v-btn>
         </v-col >  
@@ -135,6 +135,9 @@ export default {
     },
     move_to_course_taking(){
       this.$router.push({name:'CourseTaking',params:{"course_id":this.course_id}})
+    },
+    move_to_course_preview(){
+      this.$router.push({name:'CoursePreview',params:{"course_id":this.course_id}})
     },
     move_to_course_edit(){
       this.$router.push({name:'CourseEdit',params:{"course_id":this.course_id}})

@@ -39,3 +39,14 @@ class TakingCourse(Base):
 
     user = relationship("User")
     course = relationship("Course")
+
+# コースのシラバス情報
+class CourseInfoSyllabus(Base):
+    __tablename__ = "course_info_syllabus"
+
+    course_id = Column(Integer, primary_key=True, index=True)
+    subject_class = Column(String(128), nullable=False, comment="授業科目区分.")
+    subject_name = Column(String(128), nullable=False, comment="科目名.")
+    subject_credit = Column(Integer, nullable=False, comment="単位")
+    subject_code = Column(String(128), nullable=False, comment="科目コード.")
+    subject_period = Column(String(128), nullable=False, comment="開講時期.")

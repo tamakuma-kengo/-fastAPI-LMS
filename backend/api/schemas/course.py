@@ -118,3 +118,22 @@ class CourseResponse(BaseModel):
     course_name: str
     blocks: List[BlockResponse]
     flow_links: List[FlowLinkResponse]
+
+# コース情報（シラバス情報）を取得するレスポンス
+class CourseInfoSyllabusResponse(BaseModel):
+    course_id: int
+    subject_class: str
+    subject_name: str
+    subject_credit: int
+    subject_code: str
+    subject_period: str
+
+
+# コース情報を登録するスキーマ
+class CourseInfoSyllabusCreate(BaseModel):
+    course_id: int
+    subject_class: str
+    subject_name: str
+    subject_credit: int
+    subject_code: str
+    subject_period: str
