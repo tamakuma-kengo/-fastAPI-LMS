@@ -2,6 +2,9 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
+        <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="new_create">
+          コース登録が完了しました。履修者ページから、コースに参加する生徒を追加してください。
+        </div>
         <v-row>
           <v-col cols="6">
             <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
@@ -98,7 +101,8 @@ import axios from "axios";
 export default {
   name: "Home",
   props: {
-    course_id: Number
+    course_id: Number,
+    new_create: Boolean,
   },
   created: function() {
     let self = this
