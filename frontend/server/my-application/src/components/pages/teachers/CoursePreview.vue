@@ -83,7 +83,6 @@ export default {
           .then(function(response){
             console.log(response.data)
             self.course = response.data
-            self.change_content()
           }).catch(
             function(error){
               console.log(error.response)
@@ -160,11 +159,6 @@ export default {
         }
       ) 
     },
-    change_content(){
-      for(let i = 0; i < this.course.blocks.length; i++){
-        this.course.blocks[i].content = this.course.blocks[i].content.replace(/\s*\d*\s*\/flow\/\d*\s*/,`http://localhost:8080/t/CoursePreview/${this.course_id}/PreviewFlow/${this.course.flow_links[i].flow_id}`)
-      }
-    }
   },
 };
 </script>

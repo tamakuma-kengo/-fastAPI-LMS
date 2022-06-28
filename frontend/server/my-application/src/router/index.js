@@ -111,7 +111,7 @@ const routes = [
     props: true,
   },
   {
-    path: "/t/CoursePreview/:course_id/Previewflow/:flow_id",
+    path: "/t/CoursePreview/:course_id/flow/:flow_id",
     name: "PreviewFlow",
     component: PreviewFlow,
     props: true,
