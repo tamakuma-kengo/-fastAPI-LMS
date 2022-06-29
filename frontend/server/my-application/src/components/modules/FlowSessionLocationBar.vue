@@ -52,12 +52,33 @@ export default {
       num_of_pages: Number
     },
   created: function() {
+    let self = this
+    axios.get("http://localhost:8000/home_profile", {withCredentials: true})
+        .then(function(response){
+          console.log(response.data)
+          if(response.data.create){
+            self.is_creater = response.data.create
+            self.get_ids_by_session_id()
+          }
+        }).catch(
+          function(error)  {
+            console.log(error)
+            if(error.response.status == 401){
+              self.$router.push({name:'Signup'})
+            }else{
+              console.log(error.response)
+            }
+          }
+        )
   },
   data: () => ({
+    is_creater: false,
+    course_id: null,
   }),
   methods:{
      go_any_page(page_num){
-       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})
+      if(this.is_creater){this.$router.push({name:'PreviewFlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})}
+      else{this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})}
      },
      go_flow_top_page(){
       let self = this
@@ -65,7 +86,8 @@ export default {
       .then(function(response){
         console.log(response.data)
         let flow_id = response.data.flow_id
-        self.$router.push({name:'Flow', params: {flow_id:flow_id}})
+        if(self.is_creater){self.$router.push({name:'PreviewFlow', params: {"course_id":self.course_id, "flow_id":flow_id}})}
+        else{self.$router.push({name:'Flow', params: {flow_id:flow_id}})}
       }).catch(function(error){
         console.log(error.response)
       })
@@ -85,8 +107,21 @@ export default {
       )
     },
     go_flow_completion_page(){
-      this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})
-    }
+      if(this.is_creater){this.$router.push({name:'PreviewFlowCompletion', params: {flow_session_id: this.flow_session_id}})}
+      else{this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})}
+    },
+    get_ids_by_session_id(){
+      let self = this
+      axios.get(`http://localhost:8000/get_ids_by_flow_session_id/${self.flow_session_id}`, {withCredentials: true})
+      .then(function(response){
+        console.log(response.data)
+        self.flow_id = response.data.flow_id
+        self.course_id = response.data.course_id
+        self.get_completion_page()
+      }).catch(function(error){
+        console.log(error.response)
+      })
+    },
   },
 };
 </script>

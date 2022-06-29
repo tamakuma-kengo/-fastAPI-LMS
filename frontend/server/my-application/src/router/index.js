@@ -17,6 +17,9 @@ import CourseInfo from "../components/pages/teachers/CourseInfo.vue";
 import CourseTaking from "../components/pages/teachers/CourseTaking.vue";
 import CoursePreview from "../components/pages/teachers/CoursePreview.vue";
 import CourseEdit from "../components/pages/teachers/CourseEdit.vue";
+import PreviewFlow from "../components/pages/teachers/PreviewFlow.vue";
+import PreviewFlowCompletion from "../components/pages/teachers/PreviewFlowCompletion.vue";
+import PreviewFlowSession from "../components/pages/teachers/PreviewFlowSession.vue";
 
 Vue.use(VueRouter);
 
@@ -106,6 +109,29 @@ const routes = [
     name: "CoursePreview",
     component: CoursePreview,
     props: true,
+  },
+  {
+    path: "/t/CoursePreview/:course_id/flow/:flow_id",
+    name: "PreviewFlow",
+    component: PreviewFlow,
+    props: true,
+  },
+  {
+    path: "/PreviewFlowSession/:flow_session_id/:page_num",
+    name: "PreviewFlowSession",
+    component: PreviewFlowSession,
+    props: (route) => ({
+      flow_session_id: Number(route.params.flow_session_id),
+      page_num: Number(route.params.page_num),
+    }),
+  },
+  {
+    path: "/PreviewFlowSession/:flow_session_id/CompletionPage",
+    name: "PreviewFlowCompletion",
+    component: PreviewFlowCompletion,
+    props: (route) => ({
+      flow_session_id: Number(route.params.flow_session_id),
+    }),
   },
   {
     path: "/t/CourseEdit/:course_id",

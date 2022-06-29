@@ -285,7 +285,7 @@ export default {
       this.$router.push({name:'Login'})
     },
     move_to_course_info(course_id){
-      this.$router.push({name:'CourseInfo', params: {course_id: course_id}})
+      this.$router.push({name:'CourseInfo', params: {course_id: course_id, new_create: true}})
     },
     register_course(){
       const is_validation_success = this.validate_form()

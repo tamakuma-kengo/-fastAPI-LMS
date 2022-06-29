@@ -76,10 +76,12 @@
                   <v-btn @click="add_taking_students()" color="primary">追加</v-btn>
                 </v-col>
               </v-row>
+              <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="is_taking">
+                {{this.add_username}}が追加されました。
+              </div>
             </v-container>
           </v-responsive>
         </v-row>
-        
       </v-container>
     </v-responsive>
   </v-container>
@@ -109,7 +111,9 @@ export default {
     course: {},
     taking_students: [],
     add_email: "",
-    add_user_error: ""
+    add_user_error: "",
+    is_taking: false,
+    add_username: "",
   }),
   methods:{
     logout: function(){
@@ -184,6 +188,11 @@ export default {
         .then(function(response){
           console.log(response.data)
           self.taking_students = response.data
+          for(let user of self.taking_students){
+            if(user.email == self.add_email){
+              self.add_username = user.username
+            }
+          }
         }).catch(function(error){
           console.log(error.response)
         }).catch(function(error)  {
@@ -209,6 +218,7 @@ export default {
       .then(function(response){
         console.log(response.data)
         self.get_taking_students()
+        self.is_taking = true
       })
     }
   },
