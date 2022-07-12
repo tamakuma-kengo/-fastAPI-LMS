@@ -54,6 +54,7 @@ export default {
     FlowSessionLocationBar,
   },
   created: function() {
+    this.get_ids_by_session_id()
     this.get_flow_info()
     this.update_data()
   },
@@ -120,7 +121,18 @@ export default {
     go_next_page(){
       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: this.page_num+1, blank_answers: this.blank_answers}})
     },
-    
+    get_ids_by_session_id(){
+      let self = this
+      axios.get(`http://localhost:8000/get_ids_by_flow_session_id/${self.flow_session_id}`, {withCredentials: true})
+      .then(function(response){
+        console.log(response.data)
+        self.flow_id = response.data.flow_id
+        self.course_id = response.data.course_id
+        self.get_completion_page()
+      }).catch(function(error){
+        console.log(error.response)
+      })
+    },
 
   },
 };
