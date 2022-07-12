@@ -174,7 +174,8 @@ export default {
           )
       },
       go_to_course(){
-        this.$router.push({name:'Course', params: {course_id:this.course_id}})
+        if(this.is_creater){this.$router.push({name:'CoursePreview', params: {course_id:this.course_id}})}
+        else{this.$router.push({name:'Course', params: {course_id:this.course_id}})}
       },
       restart_flow_session(flow_session_id){
         this.$router.push({name:'FlowSession', params: {flow_session_id: flow_session_id, page_num: 1}})

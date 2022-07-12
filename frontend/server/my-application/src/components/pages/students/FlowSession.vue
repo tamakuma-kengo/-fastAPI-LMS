@@ -2,6 +2,7 @@
   <v-container class="mx-auto">
     <v-responsive :min-width="800" :max-width="1200" class="mx-auto">
       <v-container >  
+        <CourseInfoBarVue :select_id="3" :course_id="this.course_id" v-if="this.is_creater"></CourseInfoBarVue>
         <v-subheader :class="['text-h5']">{{this.flow_title}}</v-subheader>
           <v-container>
             <flow-session-location-bar :page_num='this.page_num' :flow_session_id="this.flow_session_id" :num_of_pages="this.num_of_pages"></flow-session-location-bar>
@@ -29,6 +30,7 @@
 
 <script>
 import axios from "axios";
+import CourseInfoBarVue from "../../modules/CourseInfoBar.vue";
 import SimplePage from '../../modules/SimplePage.vue'
 import SingleTextQuestion from '../../modules/SingleTextQuestion.vue'
 import MultipleTextQuestion from '../../modules/MultipleTextQuestion.vue'
@@ -43,6 +45,7 @@ export default {
     page_num: Number,
   },
   components: {
+    CourseInfoBarVue,
     SimplePage,
     SingleTextQuestion,
     MultipleTextQuestion,

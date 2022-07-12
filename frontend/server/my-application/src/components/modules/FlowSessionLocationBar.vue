@@ -77,8 +77,7 @@ export default {
   }),
   methods:{
      go_any_page(page_num){
-      if(this.is_creater){this.$router.push({name:'PreviewFlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})}
-      else{this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})}
+      this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: page_num}})
      },
      go_flow_top_page(){
       let self = this
@@ -107,8 +106,7 @@ export default {
       )
     },
     go_flow_completion_page(){
-      if(this.is_creater){this.$router.push({name:'PreviewFlowCompletion', params: {flow_session_id: this.flow_session_id}})}
-      else{this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})}
+      this.$router.push({name:'FlowCompletion', params: {is_creater: this.is_creater,flow_session_id: this.flow_session_id}})
     },
     get_ids_by_session_id(){
       let self = this

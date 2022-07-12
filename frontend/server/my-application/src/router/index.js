@@ -18,8 +18,6 @@ import CourseTaking from "../components/pages/teachers/CourseTaking.vue";
 import CoursePreview from "../components/pages/teachers/CoursePreview.vue";
 import CourseEdit from "../components/pages/teachers/CourseEdit.vue";
 import PreviewFlow from "../components/pages/teachers/PreviewFlow.vue";
-import PreviewFlowCompletion from "../components/pages/teachers/PreviewFlowCompletion.vue";
-import PreviewFlowSession from "../components/pages/teachers/PreviewFlowSession.vue";
 
 Vue.use(VueRouter);
 
@@ -78,6 +76,7 @@ const routes = [
     name: "FlowCompletion",
     component: FlowCompletion,
     props: (route) => ({
+      is_creater: Boolean(route.params.is_creater),
       flow_session_id: Number(route.params.flow_session_id),
     }),
   },
@@ -115,23 +114,6 @@ const routes = [
     name: "PreviewFlow",
     component: PreviewFlow,
     props: true,
-  },
-  {
-    path: "/PreviewFlowSession/:flow_session_id/:page_num",
-    name: "PreviewFlowSession",
-    component: PreviewFlowSession,
-    props: (route) => ({
-      flow_session_id: Number(route.params.flow_session_id),
-      page_num: Number(route.params.page_num),
-    }),
-  },
-  {
-    path: "/PreviewFlowSession/:flow_session_id/CompletionPage",
-    name: "PreviewFlowCompletion",
-    component: PreviewFlowCompletion,
-    props: (route) => ({
-      flow_session_id: Number(route.params.flow_session_id),
-    }),
   },
   {
     path: "/t/CourseEdit/:course_id",
