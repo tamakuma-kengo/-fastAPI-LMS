@@ -2,6 +2,7 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
+
         <CourseInfoBarVue :select_id="3" :course_id="this.course_id"></CourseInfoBarVue>
         <v-row>
           <FlowVue :course_id="this.course_id" :flow_id="this.flow_id"></FlowVue>
