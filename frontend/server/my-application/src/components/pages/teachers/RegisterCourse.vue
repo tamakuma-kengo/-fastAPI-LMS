@@ -20,11 +20,65 @@
                 <v-text-field :rules="titleRules" label="コース名" v-model="courseName" background-color="white" filled ></v-text-field>
               </v-row>
               <v-row align="center" justify="space-around" >
-                  <v-text-field :rules="startDateTimeRules" label="開始日時 ex. 2022-02-04 13:30:00" v-model="startDateTime" background-color="white" filled error-count="10"></v-text-field>
+                <v-col>
+                  <v-text-field :rules="startDateRules" label="開始日 ex. 2022-02-04" v-model="startDate" background-color="white" filled error-count="10">
+                    <template v-slot:append-outer>
+                      <v-menu offset-y :close-on-content-click="false">
+                        <template v-slot:activator="{on}">
+                          <v-btn icon color="primary" dark elevation="0" v-on="on">
+                            <v-icon>mdi-calendar</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-date-picker v-model="startDate"/>
+                      </v-menu>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col>
+                  <v-text-field :rules="startTimeRules" label="開始時間 ex. 13:30:00" v-model="startTime" background-color="white" filled error-count="10">
+                    <template v-slot:append-outer>
+                      <v-menu offset-y :close-on-content-click="false">
+                        <template v-slot:activator="{on}">
+                          <v-btn icon color="primary" dark elevation="0" v-on="on">
+                            <v-icon>mdi-clock</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-time-picker v-model="startTime" format="24hr" use-seconds/>
+                      </v-menu>
+                    </template>
+                  </v-text-field>
+                </v-col>
                   <!-- <v-text-field :rules="startTimeRules" label="start time   ex. 23:30" v-model="startTime" background-color="white" filled></v-text-field> -->
               </v-row>
               <v-row align="center" justify="space-around" >
-                  <v-text-field :rules="endDateTimeRules" label="終了日時 ex. 2023-10-31 23:59:59" v-model="endDateTime" background-color="white" filled error-count="10"></v-text-field>
+                <v-col>
+                  <v-text-field :rules="endDateRules" label="終了日 ex. 2022-02-04" v-model="endDate" background-color="white" filled error-count="10">
+                    <template v-slot:append-outer>
+                      <v-menu offset-y :close-on-content-click="false">
+                        <template v-slot:activator="{on}">
+                          <v-btn icon color="primary" dark elevation="0" v-on="on">
+                            <v-icon>mdi-calendar</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-date-picker v-model="endDate"/>
+                      </v-menu>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col>
+                  <v-text-field :rules="endTimeRules" label="終了時間 ex. 13:30:00" v-model="endTime" background-color="white" filled error-count="10">
+                    <template v-slot:append-outer>
+                      <v-menu offset-y :close-on-content-click="false">
+                        <template v-slot:activator="{on}">
+                          <v-btn icon color="primary" dark elevation="0" v-on="on">
+                            <v-icon>mdi-clock</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-time-picker v-model="endTime" format="24hr" use-seconds/>
+                      </v-menu>
+                    </template>
+                  </v-text-field>
+                </v-col>
                   <!-- <v-text-field :rules="startTimeRules" label="end time" v-model="startTime" background-color="white" filled></v-text-field> -->
               </v-row>
               <v-row align="center" justify="space-around" >
@@ -70,18 +124,18 @@ export default {
     titleRules:[
       v => !!v || 'コース名は必須です.',
     ],
-    startDateTimeRules:[
-      v => !!v || '開始日時は必須です.',
+    startDateRules:[
+      v => !!v || '開始日は必須です.',
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(!pattern.test(v))
-          return '入力形式が不正です. 例: 2022-02-04 13:30:30 '
+          return '入力形式が不正です. 例: 2022-02-04'
         return true
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
           const date_time_splited = v.split(" ")
           const date_splited = date_time_splited[0].split("-")
@@ -92,7 +146,7 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
           const date_time_splited = v.split(" ")
           const date_splited = date_time_splited[0].split("-")
@@ -103,7 +157,7 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
           const date_time_splited = v.split(" ")
           const date_splited = date_time_splited[0].split("-")
@@ -132,12 +186,21 @@ export default {
         }
         return true
       },
+    ],
+    startTimeRules:[
+      v => !!v || '開始時間は必須です.',
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
+        if(!pattern.test(v))
+          return '入力形式が不正です. 例: 13:30:30'
+        return true
+      },
+      v => {
+        if(!v) return true
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[0] > 23 || time_splited[0] < 0)
             return "時は0~23の間で入力してください. " 
         }
@@ -145,10 +208,9 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[1] > 59 || time_splited[1] < 0)
             return "分は0~59の間で入力してください. " 
         }
@@ -156,30 +218,28 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[2] > 59 || time_splited[2] < 0)
             return "秒は0~59の間で入力してください. " 
         }
         return true
       },
     ],
-    endDateTimeRules:[
+    endDateRules:[
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(!pattern.test(v))
-          return '入力形式が不正です. 例: 2022-02-04 13:30:30 '
+          return '入力形式が不正です. 例: 2022-02-04 '
         return true
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const date_splited = date_time_splited[0].split("-")
+          const date_splited = v.split("-")
           if (date_splited[0] > 2100 || date_splited[0] < 2000)
             return "年は2000~2100の間で入力してください. " 
         }
@@ -187,10 +247,9 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const date_splited = date_time_splited[0].split("-")
+          const date_splited = v.split("-")
           if (date_splited[1] > 12 || date_splited[1] < 1)
             return "月は1~12の間で入力してください. " 
         }
@@ -198,10 +257,9 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{4}-\d{2}-\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const date_splited = date_time_splited[0].split("-")
+          const date_splited = v.split("-")
           if (date_splited[1] == 2){
             if (date_splited[0]%400==0){
               if (date_splited[2] > 29 || date_splited[2] < 0)
@@ -227,12 +285,20 @@ export default {
         }
         return true
       },
+    ],
+    endTimeRules:[
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
+        if(!pattern.test(v))
+          return '入力形式が不正です. 例: 13:30:30 '
+        return true
+      },
+      v => {
+        if(!v) return true
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[0] > 23 || time_splited[0] < 0)
             return "時は0~23の間で入力してください. " 
         }
@@ -240,10 +306,9 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[1] > 59 || time_splited[1] < 0)
             return "分は0~59の間で入力してください. " 
         }
@@ -251,10 +316,9 @@ export default {
       },
       v => {
         if(!v) return true
-        const pattern = /\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/
+        const pattern = /\d{2}:\d{2}:\d{2}/
         if(pattern.test(v)){
-          const date_time_splited = v.split(" ")
-          const time_splited = date_time_splited[1].split(":")
+          const time_splited = v.split(":")
           if (time_splited[2] > 59 || time_splited[2] < 0)
             return "秒は0~59の間で入力してください. " 
         }
@@ -266,7 +330,11 @@ export default {
     error_msgs: [],
     courseName: "",
     startDateTime: "",
+    startDate: "",
+    startTime: "",
     endDateTime: "",
+    endDate: "",
+    endTime: "",
   }),
   methods:{
     logout: function(){
@@ -288,9 +356,11 @@ export default {
       this.$router.push({name:'CourseInfo', params: {course_id: course_id, new_create: true}})
     },
     register_course(){
+      this.startDateTime = this.startDate + " " + this.startTime
+      this.endDateTime = this.endDate + " " + this.endTime
       const is_validation_success = this.validate_form()
       if(is_validation_success){
-          const params = {"course_name":this.courseName,"start_date_time": "2022-2-10T00:00:00","end_date_time":"2022-05-10T23:59:59","course_files": this.files}
+          const params = {"course_name":this.courseName,"start_date_time": this.startDateTime.replace(/\s/,"T"),"end_date_time":this.endDateTime.replace(/\s/,"T"),"course_files": this.files}
           console.log(JSON.stringify(params));
           const config = {
             headers: {
