@@ -20,6 +20,7 @@
               </v-col>
               <v-col class="d-flex align-end flex-column">
                 <v-btn @click="go_next_page()" v-if="this.page_num < this.num_of_pages"> 次のページ </v-btn>
+                <v-btn @click="finish_flow_session()" v-if="this.page_num == this.num_of_pages"> 終了 </v-btn>
               </v-col>
             </v-row>
           </v-container>
