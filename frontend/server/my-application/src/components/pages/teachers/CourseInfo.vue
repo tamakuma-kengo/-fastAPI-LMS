@@ -5,49 +5,7 @@
         <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap" v-if="new_create">
           コース登録が完了しました。履修者ページから、コースに参加する生徒を追加してください。
         </div>
-        <v-row>
-          <v-col cols="6">
-            <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
-          </v-col>
-          <v-col cols="6">
-            <v-container>  
-              <v-row justify="end">
-                <div>
-                  {{this.user_info.username}} ( {{this.user_info.email}})<br>
-                  {{this.user_info.kind_name}} としてログイン中
-                </div>
-              </v-row>
-              <v-row justify="end">
-                <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
-        <v-row>
-        <v-col cols="2">
-          <v-btn depressed block color="transparent"  class="mb-2"> 
-            コース情報
-          </v-btn>
-          <v-divider class="red"></v-divider>
-        </v-col>
-        <v-col cols="2">
-          <v-btn @click="move_to_course_taking()" depressed block color="transparent"  class="mb-2">
-            履修者
-          </v-btn>
-        </v-col >  
-        <v-col cols="2">
-          <v-btn @click="move_to_course_preview()" depressed block color="transparent"  class="mb-2">
-            プレビュー
-          </v-btn>
-        </v-col >  
-        <v-col cols="2">
-          <v-btn @click="move_to_course_edit()" depressed block color="transparent"  class="mb-2">
-            編集
-          </v-btn>
-        </v-col>
-        </v-row>
-        <v-divider class="mt-0"></v-divider>
-        <br>
+        <CourseInfoBarVue :select_id="1" :course_id="this.course_id"></CourseInfoBarVue>
         <v-row>
           <v-col>
             <v-subheader :class="['text-h5']">科目情報</v-subheader>
@@ -97,12 +55,16 @@ table thead tr th {
 
 <script>
 import axios from "axios";
+import CourseInfoBarVue from "../../modules/CourseInfoBar.vue";
 
 export default {
   name: "Home",
   props: {
     course_id: Number,
     new_create: Boolean,
+  },
+  components: {
+    CourseInfoBarVue,
   },
   created: function() {
     let self = this
@@ -147,18 +109,6 @@ export default {
           this.moveToLogin()
         console.log(status,statusText)
       }
-    },
-    moveToLogin: function(){
-      this.$router.push({name:'Login'})
-    },
-    move_to_course_taking(){
-      this.$router.push({name:'CourseTaking',params:{"course_id":this.course_id}})
-    },
-    move_to_course_preview(){
-      this.$router.push({name:'CoursePreview',params:{"course_id":this.course_id}})
-    },
-    move_to_course_edit(){
-      this.$router.push({name:'CourseEdit',params:{"course_id":this.course_id}})
     },
     get_course_info(){
       let self = this

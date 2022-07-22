@@ -2,6 +2,7 @@
   <v-container class="mx-auto">
     <v-responsive :min-width="800" :max-width="1200" class="mx-auto">
       <v-container >  
+        <CourseInfoBarVue :select_id="3" :course_id="this.course_id" v-if="this.is_creater"></CourseInfoBarVue>
         <v-subheader :class="['text-h5']">{{this.flow_title}}</v-subheader>
           <v-container>
             <flow-session-location-bar :page_num='this.page_num' :flow_session_id="this.flow_session_id" :num_of_pages="this.num_of_pages"></flow-session-location-bar>
@@ -30,6 +31,7 @@
 
 <script>
 import axios from "axios";
+import CourseInfoBarVue from "../../modules/CourseInfoBar.vue";
 import SimplePage from '../../modules/SimplePage.vue'
 import SingleTextQuestion from '../../modules/SingleTextQuestion.vue'
 import MultipleTextQuestion from '../../modules/MultipleTextQuestion.vue'
@@ -44,6 +46,7 @@ export default {
     page_num: Number,
   },
   components: {
+    CourseInfoBarVue,
     SimplePage,
     SingleTextQuestion,
     MultipleTextQuestion,
@@ -52,6 +55,7 @@ export default {
     FlowSessionLocationBar,
   },
   created: function() {
+    this.get_ids_by_session_id()
     this.get_flow_info()
     this.update_data()
   },
@@ -118,23 +122,19 @@ export default {
     go_next_page(){
       this.$router.push({name:'FlowSession', params: {flow_session_id: this.flow_session_id, page_num: this.page_num+1, blank_answers: this.blank_answers}})
     },
-    finish_flow_session(){
-      const params = {"flow_session_id": this.flow_session_id}
-      const config = {headers: {'Content-Type': 'application/json'},withCredentials: true};
+    get_ids_by_session_id(){
       let self = this
-      axios.post(`http://localhost:8000/finish_flow_session`, params, config)
+      axios.get(`http://localhost:8000/get_ids_by_flow_session_id/${self.flow_session_id}`, {withCredentials: true})
       .then(function(response){
         console.log(response.data)
-        self.go_flow_completion_page()
-      }).catch(
-        function(error){
-          console.log(error)
-        }
-      )
+        self.flow_id = response.data.flow_id
+        self.course_id = response.data.course_id
+        self.get_completion_page()
+      }).catch(function(error){
+        console.log(error.response)
+      })
     },
-    go_flow_completion_page(){
-      this.$router.push({name:'FlowCompletion', params: {flow_session_id: this.flow_session_id}})
-    }
+
   },
 };
 </script>

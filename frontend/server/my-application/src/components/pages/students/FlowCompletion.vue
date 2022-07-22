@@ -2,6 +2,7 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
+        <CourseInfoBarVue :select_id="3" :course_id="this.course_id" v-if="this.is_creater"></CourseInfoBarVue>
         <v-subheader :class="['text-h5']">{{flow_title}}</v-subheader>
         <v-container class="mt-6">
           <v-row>
@@ -21,11 +22,16 @@
 <script>
 import axios from "axios";
 import { marked } from 'marked';
+import CourseInfoBarVue from "../../modules/CourseInfoBar.vue";
 
 export default {
   name: "FlowCompletion",
   props: {
+    is_creater: Boolean,
     flow_session_id: Number
+  },
+  components: {
+    CourseInfoBarVue,
   },
   created: function() {
     let self = this
@@ -48,14 +54,14 @@ export default {
     flow: {},
     completion_page_content: "",
     username : "",
-    is_creater : false,
     flow_title : "",
     flow_id: null,
     course_id: null,
   }),
   methods:{
     move_to_flow_top(){
-      this.$router.push({name:'Flow', params: {course_id:this.course_id, flow_id:this.flow_id}})
+      if(this.is_creater){this.$router.push({name:'PreviewFlow', params: {course_id:this.course_id, flow_id:this.flow_id}})}
+      else{this.$router.push({name:'Flow', params: {course_id:this.course_id, flow_id:this.flow_id}})}
     },
     markdownToHtml(md){
       return marked(md);

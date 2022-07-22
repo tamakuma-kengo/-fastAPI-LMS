@@ -2,48 +2,7 @@
   <v-container>
     <v-responsive :max-width="1200" class="mx-auto">
       <v-container>
-        <v-row>
-          <v-col cols="6">
-            <v-subheader :class="['text-h5']">{{course.course_name}}</v-subheader>
-          </v-col>
-          <v-col cols="6">
-            <v-container>  
-              <v-row justify="end">
-                <div>
-                  {{this.user_info.username}} ( {{this.user_info.email}})<br>
-                  {{this.user_info.kind_name}} としてログイン中
-                </div>
-              </v-row>
-              <v-row justify="end">
-                <v-btn text color="red" @click="logout()" value="POST">ログアウト</v-btn>
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
-        <v-row>
-        <v-col cols="2">
-          <v-btn @click="move_to_course_info()" depressed block color="transparent"  class="mb-2"> 
-            コース情報
-          </v-btn>
-        </v-col>
-        <v-col cols="2">
-          <v-btn @click="move_to_course_taking()" depressed block color="transparent"  class="mb-2">
-            履修者
-          </v-btn>
-        </v-col >  
-        <v-col cols="2">
-          <v-btn @click="move_to_course_preview()" depressed block color="transparent"  class="mb-2">
-            プレビュー
-          </v-btn>
-        </v-col >  
-        <v-col cols="2">
-          <v-btn depressed block color="transparent"  class="mb-2">
-            編集
-          </v-btn>
-          <v-divider class="red"></v-divider>
-        </v-col>  
-        </v-row>
-        <v-divider class="mt-0"></v-divider>
+        <CourseInfoBarVue :select_id="4" :course_id="this.course_id"></CourseInfoBarVue>
         <v-row class="mt-5" >
           <v-responsive :max-width="1000" class="mx-auto">
             <v-container>
@@ -96,11 +55,15 @@
 
 <script>
 import axios from "axios";
+import CourseInfoBarVue from "../../modules/CourseInfoBar.vue";
 
 export default {
   name: "Home",
   props: {
     course_id: Number
+  },
+  components: {
+    CourseInfoBarVue,
   },
   created: function() {
     let self = this
