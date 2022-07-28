@@ -19,12 +19,17 @@ import api.cruds.create_course as create_course_crud
 import api.cruds.read_course as read_course_crud
 import api.cruds.image as image_crud
 import api.cruds.update_course as update_course_crud
-
+import api.cruds.user as user_crud
 
 
 from api.db import get_db
 
 router = APIRouter()
+@router.post("/add_users", response_model=course_schema.AddUsersResponse)
+async def add_users(add_users_request: course_schema.AddUsersRequest,user_grant:UserWithGrant=Depends(get_user_grant),db:AsyncSession=Depends(get_db)):
+    if not user_grant.create:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Inactive user")
+    return  await user_crud.add_user(db,add_users_request)
 
 @router.post("/register_course", response_model=course_schema.RegisterCourseResponse)
 async def register_course(register_course_request: course_schema.RegisterCourseRequest,user_grant:UserWithGrant=Depends(get_user_grant),db:AsyncSession=Depends(get_db)):
