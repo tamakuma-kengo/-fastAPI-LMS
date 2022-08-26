@@ -43,9 +43,14 @@
                 <v-subheader :class="['text-h5']">新しいユーザーの登録</v-subheader>
               </v-col>
             </v-row>
-            <v-row v-if="is_add">
+            <v-row v-if="is_add && is_file == false">
               <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap">
                 {{this.add_username}}を追加しました.
+              </div>
+            </v-row>
+            <v-row v-else-if="is_add && is_file">
+              <div :class="`rounded-lg`" class="pa-6 mt-6 green lighten-5 text-no-wrap">
+                csvファイルからまとめて追加しました.
               </div>
             </v-row>
             <div :class="`rounded-lg`" class="pa-6 mt-6 red lighten-5 text-no-wrap" v-if="error_msgs.length>0">
@@ -188,7 +193,7 @@ export default {
         })
       },
       add_users(){
-        const is_validation_success = this.validate_form(this.add_username,this.add_email,this.add_password,this.add_kind_name)
+        let is_validation_success = this.validate_form(this.add_username,this.add_email,this.add_password,this.add_kind_name)
         if(is_validation_success){
           this.add_user(this.add_username,this.add_email,this.add_password,this.add_kind_id)
         }
@@ -208,7 +213,7 @@ export default {
       validate_form(username,email,password,kind_name){
         this.error_msgs = []
         if(this.is_file == false ){
-          if(this.$refs.register_form.validate()){
+          if(this.$refs.add_user_form.validate()){
             if(username.length == 0 || email.length == 0 || password.length == 0 || this.re_password.length == 0){
               this.error_msgs.push("入力されていない項目があります．登録したい情報を入力してください．")
             }
