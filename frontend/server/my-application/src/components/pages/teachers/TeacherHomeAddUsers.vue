@@ -80,6 +80,20 @@
               </v-row>
             </v-form>
             </div>
+            <v-row class="mt-5" >
+              <v-col cols="12">
+                <v-subheader :class="['text-h5']">ユーザーをまとめて登録する場合は、こちらからcsvファイルを選択してください。</v-subheader>
+              </v-col>
+            </v-row>
+            <div :class="`rounded-lg`" class="pa-8 mt-6 blue lighten-5 text-no-wrap">
+              <v-row align="center" justify="space-around" >
+                <input id="csvfile" v-on:change="onFileChange" type="file">
+                <v-btn depressed color="primary" @click="add_fileusers()" value="POST">
+                    まとめて登録する
+                </v-btn>
+              </v-row>
+            </div>
+            {{this.fileusers}}
           </v-container>
         </v-row>
       </v-container>
@@ -127,6 +141,9 @@ export default {
     add_kind_id: 0,
     error_msgs: [],
     is_add : false,
+    file: "",
+    fileusers: [],
+    is_file: false,
   }),
   methods:{
       logout: function(){
@@ -150,49 +167,106 @@ export default {
       move_to_add_users(){
         this.$router.push({name:'AddUsers'})
       },
+      add_user(username,email,password,kind_id){
+        const params = {"username": username, "email": email, "password": password, "kind_id": kind_id}
+        console.log(JSON.stringify(params));
+        const config = {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        };
+        let self = this
+        axios.post('http://localhost:8000/add_users', params, config)
+        .then(function(response){
+          console.log(response.data)
+          if(response.data.success){
+            self.is_add = true
+          }else{
+            self.error_msgs = [response.data.error_msg]
+          }
+        })
+      },
       add_users(){
-        const is_validation_success = this.validate_form()
+        const is_validation_success = this.validate_form(this.add_username,this.add_email,this.add_password,this.add_kind_name)
         if(is_validation_success){
-          const params = {"username":this.add_username, "email": this.add_email, "password":this.add_password, "kind_id": this.add_kind_id}
-          console.log(JSON.stringify(params));
-          const config = {
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            withCredentials: true
-          };
-          let self = this
-          axios.post('http://localhost:8000/add_users', params, config)
-          .then(function(response){
-            console.log(response.data)
-            if(response.data.success){
-              self.is_add = true
-            }else{
-              self.error_msgs = [response.data.error_msg]
-            }
-          })
+          this.add_user(this.add_username,this.add_email,this.add_password,this.add_kind_id)
         }
       },
-      validate_form(){
-        this.error_msgs = []
-        if(this.$refs.add_user_form.validate()){
-          if(this.add_username.length == 0 || this.add_email.length == 0 || this.add_password.length == 0 || this.re_password.length == 0){
-            this.error_msgs.push("入力されていない項目があります．登録したい情報を入力してください．")
-          }
-          if(this.add_password != this.re_password){
-            this.error_msgs.push("再入力されたパスワードが違います．パスワードが合っているか確認してください．")
-          }
-          if(this.add_kind_name.length == 0){
-            this.error_msgs.push("studentかteacherか選択されていません．登録したいユーザーに合わせて選択してください．")
+      add_fileusers(){
+        if(this.file.length == 0){this.error_msgs.push("csvファイルが選択されていません．ファイルを登録した後に，ボタンを押してください．")}
+        else{
+          this.is_file = true;
+          for(let fileuser of this.fileusers){
+            let is_validation_success = this.validate_form(fileuser.username,fileuser.email,fileuser.password,fileuser.kind_name)
+            if(is_validation_success){
+              this.add_user(fileuser.username,fileuser.email,fileuser.password,this.add_kind_id)
+            }
           }
         }
-        if(this.add_kind_name == "teacher"){
+      },
+      validate_form(username,email,password,kind_name){
+        this.error_msgs = []
+        if(this.is_file == false ){
+          if(this.$refs.register_form.validate()){
+            if(username.length == 0 || email.length == 0 || password.length == 0 || this.re_password.length == 0){
+              this.error_msgs.push("入力されていない項目があります．登録したい情報を入力してください．")
+            }
+            if(password != this.re_password){
+              this.error_msgs.push("再入力されたパスワードが違います．パスワードが合っているか確認してください．")
+            }
+            if(kind_name.length == 0){
+              this.error_msgs.push("studentかteacherか選択されていません．登録したいユーザーに合わせて選択してください．")
+            }
+          }
+        }
+        else{
+          if(username.length == 0){
+            this.error_msgs.push("ユーザ名が入力されていない箇所があります．ファイルを修正してください．")
+          }
+          if(email.length == 0){
+            this.error_msgs.push("メールアドレスが入力されていない箇所があります．ファイルを修正してください．")
+          }
+          if(password.length == 0){
+            this.error_msgs.push("パスワードが入力されていない箇所があります．ファイルを修正してください．")
+          }
+          if(kind_name.length == 0){
+            this.error_msgs.push("studentかteacherを入力していない箇所があります．ファイルを修正してください．")
+          }          
+        }
+        if(kind_name == "teacher"){
           this.add_kind_id = 1
         }
-        else if(this.add_kind_name == "student"){
+        else if(kind_name == "student"){
           this.add_kind_id = 2
         }
         return this.error_msgs.length == 0
+      },
+      onFileChange(fileObjects) {
+        this.file = fileObjects.target.files[0];
+        const csvreader = new FileReader();
+
+        const loadFunction = () => {
+          const lines = csvreader.result.split('\n');
+          const data = lines.filter(function(s){return s !== '';});
+          data.forEach(e =>{
+            const readusers = e.split(',');
+            if(readusers.length != 4){
+              this.error_msgs.push("登録されたcsvファイルのデータが間違っています．修正して，再度登録をお願いします．");
+              return;
+            }
+            const users = {
+              username: readusers[0],
+              email: readusers[1],
+              password: readusers[2],
+              kind_name: readusers[3].replace('\r','')
+            };
+            this.fileusers.push(users);
+          });
+        };
+        console.log(this.fileusers);
+        csvreader.onload = loadFunction;
+        csvreader.readAsBinaryString(this.file);
       },
   },
 };
