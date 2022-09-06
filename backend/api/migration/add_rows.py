@@ -24,6 +24,7 @@ from api.migration.m021_add_correct_answers import add_correct_answer
 from api.migration.m022_add_flow_sessions import add_flow_session
 from api.migration.m023_add_flow_session_flow_pages import add_flowsession_flowpages
 from api.migration.m024_add_flow_session_blank_answer import add_flowsession_blank_answer
+from api.migration.m025_add_KITsuurinabi_URL import add_url_links
 
 def add_rows(db: AsyncSession):
     add_user_kind(db)
@@ -50,5 +51,6 @@ def add_rows(db: AsyncSession):
     add_flow_session(db)
     add_flowsession_flowpages(db)
     add_flowsession_blank_answer(db)
+    add_url_links(db)
     
     db.commit()

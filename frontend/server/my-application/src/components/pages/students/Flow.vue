@@ -56,6 +56,19 @@
             </div>
           </v-container>
         </v-responsive>
+        <v-container class="mt-6" v-if="this.flow_sessions[this.flow_sessions.length - 1].flow_session_grade.toFixed(1) < 60">
+          <v-row>
+            <v-col cols="3" v-for="flow_url in this.flow_urls" :key="flow_url.id">
+              <v-card @click="move_to_flow_url(flow_url.urls)" height="100">
+                <v-card-text>
+                  <p class="text-h6 text--primary">
+                    {{flow_url.study_name}}
+                  </p>
+                </v-card-text>
+              </v-card>
+              </v-col>
+          </v-row>
+        </v-container>
         <v-container class="mt-6">
           <v-row>
             <div v-html="markdownToHtml(welcome_page_content)"></div>
@@ -97,6 +110,7 @@ export default {
           .then(function(response){
             console.log(response.data)
             self.flow = response.data
+            self.get_flow_url()
           }).catch(
             function(error){
               console.log(error.response)
@@ -146,7 +160,9 @@ export default {
     is_creater : false,
     markdown:  "# Hello World",
     flow_sessions: [],
-    course: {}
+    course: {},
+    week_id: 0,
+    flow_urls: []
   }),
   methods:{
       markdownToHtml(md){
@@ -179,6 +195,24 @@ export default {
       },
       restart_flow_session(flow_session_id){
         this.$router.push({name:'FlowSession', params: {flow_session_id: flow_session_id, page_num: 1}})
+      },
+      get_flow_url(){
+        let self = this;
+        if(self.flow.id_in_yml.search(/week/) !== -1){
+          self.week_id = self.flow.id_in_yml.match(/\d+/)
+        }
+        axios.get(`http://localhost:8000/get_flow_url/${self.week_id}`, {withCredentials: true})
+        .then(function(response){
+          console.log(response.data)
+          self.flow_urls = response.data
+        }).catch(
+          function(error){
+            console.log(error)
+          }
+        )
+      },
+      move_to_flow_url(flow_url){
+        window.open(flow_url, '_blank')
       }
   },
 };

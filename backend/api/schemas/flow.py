@@ -46,6 +46,7 @@ class FlowSessionBlankAnswerCreate(BaseModel):
 # レスポンス用
 class FlowResponse(BaseModel):
     title: str
+    id_in_yml: str
     check_answer_timing: str
     challenge_limit: Optional[int]
     restart_session: Optional[bool]
@@ -91,6 +92,12 @@ class RegisterAnswerResponse(BaseModel):
         orm_mode = True
     
     # commentary: str
+
+class FlowURLResponse(BaseModel):
+    id: int
+    week_id: int
+    study_name: str
+    urls: str
     
 # リクエスト用
 class StartFlowSessionRequest(BaseModel):

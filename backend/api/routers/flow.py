@@ -74,3 +74,7 @@ async def get_flowpage(flow_session_id: int, page_num: int, user: User = Depends
 @router.post("/register_blank_answer", response_model=List[flow_schema.RegisterAnswerResponse])
 async def register_blank_answer(answer_blank_request: List[flowpage_schema.AnswerBlankRequest], user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
     return await flow_crud.register_blank_answer(db, answer_blank_request)
+
+@router.get("/get_flow_url/{week_id}", response_model=List[flow_schema.FlowURLResponse])
+async def get_flow_url(week_id :int, user: User = Depends(user_crud.get_current_active_user), db:AsyncSession=Depends(get_db)):
+    return await flow_crud.get_flow_url(db, week_id)

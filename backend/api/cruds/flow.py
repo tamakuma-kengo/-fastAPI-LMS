@@ -1,4 +1,5 @@
 from tokenize import triple_quoted
+from unittest import result
 from urllib import response
 from fastapi import  Depends,HTTPException,status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,6 +13,7 @@ import api.models.flow as flow_model
 import api.models.flow_session as flow_session_model
 import api.models.flow_page as flow_page_model
 import api.models.page_group as page_group_model
+import api.models.url_links as url_links_model
 
 import api.schemas.course as course_schema
 import api.schemas.flow as flow_schema
@@ -25,6 +27,7 @@ async def select_flow(db: AsyncSession,flow_id: int) -> flow_schema.FlowResponse
         db.execute(
             select(
                 flow_model.Flow.title,
+                flow_model.Flow.id_in_yml,
                 flow_model.FlowRule.check_answer_timing,
                 flow_model.FlowRule.challenge_limit,
                 flow_model.FlowRule.restart_session,
@@ -443,6 +446,19 @@ async def insert_blank_answer(db: AsyncSession, answer_blank_request:List[flowpa
     # print(type(is_correct)) # デバッグ用
     return response
 
+async def select_flow_url(db:AsyncSession, week_id:int)-> List[flow_schema.FlowURLResponse]:
+    result: Result = await(
+        db.execute(
+            select(
+                url_links_model.URLLinks.id,
+                url_links_model.URLLinks.week_id,
+                url_links_model.URLLinks.study_name,
+                url_links_model.URLLinks.urls,
+            ).where(url_links_model.URLLinks.week_id == week_id)
+        )
+    )
+    return result.all()
+
 async def is_readable_flow(db: AsyncSession, flow_id: int, user: User):
     return True
 
@@ -505,4 +521,7 @@ async def get_flow_session_flowpage_answer(db: AsyncSession, flow_session_id: in
 
 async def register_blank_answer(db: AsyncSession, answer_blank_request: List[flowpage_schema.AnswerBlankRequest]):
     return await insert_blank_answer(db=db, answer_blank_request=answer_blank_request)
+
+async def get_flow_url(db: AsyncSession, week_id: int):
+    return await select_flow_url(db=db, week_id=week_id)
     
