@@ -56,7 +56,7 @@
             </div>
           </v-container>
         </v-responsive>
-        <v-container class="mt-6" v-if="this.flow_sessions[this.flow_sessions.length - 1].flow_session_grade.toFixed(1) < 60">
+        <v-container class="mt-6" v-if="this.flow_sessions.length > 0 && this.flow_sessions[this.flow_sessions.length - 1].flow_session_grade.toFixed(1) < 60">
           <v-row>
             <v-col cols="3" v-for="flow_url in this.flow_urls" :key="flow_url.id">
               <v-card @click="move_to_flow_url(flow_url.urls)" height="100">
