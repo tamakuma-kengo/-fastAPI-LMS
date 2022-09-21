@@ -52,3 +52,9 @@ class TakingCourseUserResponse(BaseModel):
     email: str
     kind_name: str
     is_active: bool
+
+class TakingUsersResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    user_kind_id: int

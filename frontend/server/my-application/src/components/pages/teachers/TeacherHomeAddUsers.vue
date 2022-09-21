@@ -98,7 +98,7 @@
                 </v-btn>
               </v-row>
             </div>
-            {{this.fileusers}}
+            {{this.users}}
           </v-container>
         </v-row>
       </v-container>
@@ -118,6 +118,7 @@ export default {
           console.log(response.data)
           self.user_info = response.data
           self.is_create = response.data.create
+          self.get_users()
           if(self.is_create){
             self.get_created_courses()
           }
@@ -149,6 +150,7 @@ export default {
     file: "",
     fileusers: [],
     is_file: false,
+    users: [],
   }),
   methods:{
       logout: function(){
@@ -171,6 +173,18 @@ export default {
       },
       move_to_add_users(){
         this.$router.push({name:'AddUsers'})
+      },
+      get_users(){
+        let self = this
+        axios.get("http://localhost:8000/get_users", {withCredentials: true})
+          .then(function(response){
+            console.log(response.data)
+            self.users = response.data
+          }).catch(
+            function(error){
+              console.log(error)
+            }
+          )
       },
       add_user(username,email,password,kind_id){
         const params = {"username": username, "email": email, "password": password, "kind_id": kind_id}
@@ -237,7 +251,10 @@ export default {
           }
           if(kind_name.length == 0){
             this.error_msgs.push("studentかteacherを入力していない箇所があります．ファイルを修正してください．")
-          }          
+          }
+          if(this.users.some(e => e.email == email)){
+            this.error_msgs.push("すでに登録されているユーザーが存在します．ファイルのユーザ名，メールアドレスと登録されているユーザーに重複がないか確認した上で，再度ファイルの登録をお願いします．")
+          }
         }
         if(kind_name == "teacher"){
           this.add_kind_id = 1

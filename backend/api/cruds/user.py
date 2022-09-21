@@ -72,6 +72,18 @@ async def select_user_with_grant(db: AsyncSession,email: str) -> List[user_schem
     # print(result.all())
     return result.first()
 
+async def select_users(db:AsyncSession, email:str) -> List[user_schema.TakingUsersResponse]:
+    result: Result = await(
+        db.execute(
+            select(
+                user_model.User.id,
+                user_model.User.username,
+                user_model.User.email,
+                user_model.User.user_kind_id
+            )
+        )
+    )
+    return result.all()
 
 async def add_user(db: AsyncSession,add_users_request:course_schema.AddUsersRequest) -> course_schema.AddUsersResponse:
     hashed_password = get_password_hash(add_users_request.password)
@@ -201,3 +213,6 @@ async def get_user_grant(current_user:UserWithGrant = Depends(get_user_with_gran
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+async def get_taking_users(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
+    taking_users = await select_users(db=db,email=authed_token.email)
+    return taking_users
