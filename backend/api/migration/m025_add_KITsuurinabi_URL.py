@@ -265,71 +265,77 @@ def add_url_links(db:AsyncSession):
             url_links_model.URLLinks(
                 id = 44,
                 week_id = 23,
+                study_name = "角運動量",
+                urls = "https://w3e.kanazawa-it.ac.jp/math/physics/category/mechanics/motion/angular_momentum/henkan-tex.cgi?target=/math/physics/category/mechanics/motion/angular_momentum/angular_momentum.html"
+            ),  
+            url_links_model.URLLinks(
+                id = 45,
+                week_id = 23,
                 study_name = "回転軸周りの慣性モーメント（z軸の慣性能率）",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/sekibun/zyuusekibun/henkan-tex.cgi?target=/math/category/sekibun/zyuusekibun/zyuusekibun-ouyou.html"
             ),
             url_links_model.URLLinks(
-                id = 45,
+                id = 46,
                 week_id = 1,
                 study_name = "復習問題：数列とその和",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/suuretu/question/henkan-tex.cgi?target=/math/category/suuretu/question/index.html"
             ),
             url_links_model.URLLinks(
-                id = 46,
+                id = 47,
                 week_id = 1,
                 study_name = "復習問題：極限",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/other/kyokugen/question/henkan-tex.cgi?target=/math/category/other/kyokugen/question/index.html"
             ),
             url_links_model.URLLinks(
-                id = 47,
+                id = 48,
                 week_id = 1,
                 study_name = "復習問題：数列の極限",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/bibun/bibunhouteisiki/henkan-tex.cgi?target=/math/category/bibun/bibunhouteisiki/ikkai_senkei_bibun_eq.html"
             ),
             url_links_model.URLLinks(
-                id = 48,
+                id = 49,
                 week_id = 2,
                 study_name = "復習問題：定積分",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/cgi-bin/question_list/question_list.cgi?node=/math/category/sekibun/teisekibun-no-kihonsiki.html"
             ),
             url_links_model.URLLinks(
-                id = 49,
+                id = 50,
                 week_id = 3,
                 study_name = "復習問題：不定積分",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/cgi-bin/question_list/question_list.cgi?node=/math/category/sekibun/futeisekibun-no-kihonsiki.html"
             ),
             url_links_model.URLLinks(
-                id = 50,
+                id = 51,
                 week_id = 3,
                 study_name = "復習問題：定積分・不定積分",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/sekibun/question/henkan-tex.cgi?target=/math/category/sekibun/question/sekibun-q.html"
             ),
             url_links_model.URLLinks(
-                id = 51,
+                id = 52,
                 week_id = 5,
                 study_name = "復習問題：部分積分法",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/cgi-bin/question_list/question_list.cgi?node=/math/category/sekibun/bubunsekibun.html"
             ),  
             url_links_model.URLLinks(
-                id = 52,
+                id = 53,
                 week_id = 6,
                 study_name = "復習問題：置換積分法",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/cgi-bin/question_list/question_list.cgi?node=/math/category/sekibun/chikansekibun.html"
             ),   
             url_links_model.URLLinks(
-                id = 53,
+                id = 54,
                 week_id = 7,
                 study_name = "復習問題：微分方程式",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/bibun/bibunhouteisiki/question/henkan-tex.cgi?target=/math/category/bibun/bibunhouteisiki/question/bibun-eq-q_2.html"
             ),   
             url_links_model.URLLinks(
-                id = 54,
+                id = 55,
                 week_id = 10,
                 study_name = "復習問題：1階線形微分方程式",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/bibun/bibunhouteisiki/question/henkan-tex.cgi?target=/math/category/bibun/bibunhouteisiki/question/bibun-eq-q_4.html"
             ),   
             url_links_model.URLLinks(
-                id = 55,
+                id = 56,
                 week_id = 11,
                 study_name = "復習問題：1階線形微分方程式",
                 urls = "https://w3e.kanazawa-it.ac.jp/math/category/bibun/bibunhouteisiki/question/henkan-tex.cgi?target=/math/category/bibun/bibunhouteisiki/question/bibun-eq-q_4.html"
