@@ -98,7 +98,6 @@
                 </v-btn>
               </v-row>
             </div>
-            {{this.users}}
           </v-container>
         </v-row>
       </v-container>
