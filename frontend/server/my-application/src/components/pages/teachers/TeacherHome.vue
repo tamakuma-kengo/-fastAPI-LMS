@@ -21,14 +21,14 @@
           <v-container v-if="is_create" class="pa-0">
             <v-row>
             <v-col cols="2">
-              <v-btn depressed block color="transparent"  class="mb-2"> 
+              <v-btn @click="move_to_select_courses()" depressed block color="transparent"  class="mb-2"> 
                 コース一覧
               </v-btn>
               <v-divider class="red"></v-divider>
             </v-col>  
             <v-col cols="2">
-              <v-btn depressed block color="transparent"  class="mb-2">
-                かりおき
+              <v-btn @click="move_to_add_users()" depressed block color="transparent"  class="mb-2">
+                ユーザーの登録
               </v-btn>
             </v-col >  
             <v-col cols="2">
@@ -121,6 +121,12 @@ export default {
       },
       move_to_course_info(course_id){
         this.$router.push({name:'CourseInfo',params:{"course_id":course_id}})
+      },
+      move_to_select_courses(){
+        this.$router.push({name:'TeacherHome'})
+      },
+      move_to_add_users(){
+        this.$router.push({name:'AddUsers'})
       },
       get_created_courses(){
         let self = this

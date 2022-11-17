@@ -3,6 +3,27 @@ from typing import Optional, List
 from pydantic import BaseModel
 from datetime import datetime
 
+# ユーザ登録時のレスポンス
+class AddedUsers(BaseModel):
+    id: int
+    username: str
+    email: str
+    hashed_password: str
+    created: datetime
+    is_active: bool
+    user_kind_id: int
+
+class AddUsersResponse(BaseModel):
+    success: bool
+    error_msg: str
+    added_users: Optional[AddedUsers] = None
+
+# ユーザ登録時のリクエスト
+class AddUsersRequest(BaseModel):
+    username: str
+    email: str
+    password: str
+    kind_id: int
 
 # コース登録時のレスポンス
 class RegisteredCourse(BaseModel):

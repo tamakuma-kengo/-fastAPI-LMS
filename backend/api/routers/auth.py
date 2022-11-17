@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Cookie, Response
 
 from api.schemas.token import Token, FormData
+from api.schemas.course import AddUsersRequest
 from api.schemas.user import User, HomeUserProfile
 from api.cruds.user import get_current_active_user,authenticate_user, add_user, get_current_active_creater
 from api.cruds.domains.generate_token import create_access_token
@@ -66,8 +67,9 @@ async def read_own_items(current_user:User = Depends(get_current_active_user)):
     return [{"item_id": "Foo", "owner": current_user.username}]
 
 @router.post("/signup")
-async def singup(username: str, email: str, password: str, re_password: str, db: AsyncSession = Depends(get_db)):
+async def singup(username: str, email: str, password: str, re_password: str,user_kind_id: int, db: AsyncSession = Depends(get_db)):
     if len(email) > 1 and len(password) > 1 and password==re_password:
-        return await add_user(db, username, email, password)
+        add_user_reqest = AddUsersRequest(username=username,email=email,password=password,kind_id=user_kind_id)
+        return await add_user(db, add_user_reqest)
     else:
         return HTTPException(status.HTTP_401_UNAUTHORIZED,detail="Signup Failed")

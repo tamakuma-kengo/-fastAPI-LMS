@@ -12,6 +12,8 @@ import FlowSession from "../components/pages/students/FlowSession.vue";
 import FlowCompletion from "../components/pages/students/FlowCompletion.vue";
 
 import TeacherHome from "../components/pages/teachers/TeacherHome.vue";
+import TeacherHomeAddUsers from "../components/pages/teachers/TeacherHomeAddUsers.vue"
+
 import RegisterCourse from "../components/pages/teachers/RegisterCourse.vue";
 import CourseInfo from "../components/pages/teachers/CourseInfo.vue";
 import CourseTaking from "../components/pages/teachers/CourseTaking.vue";
@@ -85,6 +87,11 @@ const routes = [
     path: "/t/Home",
     name: "TeacherHome",
     component: TeacherHome,
+  },
+  {
+    path: "/t/AddUsers",
+    name: "AddUsers",
+    component: TeacherHomeAddUsers,
   },
   {
     path: "/t/RegisterCourse",

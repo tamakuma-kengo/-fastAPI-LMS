@@ -1,3 +1,4 @@
+from venv import create
 from fastapi import  Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Cookie, Response
@@ -10,6 +11,7 @@ from jose import JWTError, jwt
 from datetime import datetime
 
 from api.schemas.user import HomeUserProfile, User, UserCreate, UserWithGrant
+import api.schemas.course as course_schema
 import api.models.user as user_model
 import api.schemas.user as user_schema
 from api.cruds.domains.generate_hash import verify_password,get_password_hash
@@ -70,15 +72,29 @@ async def select_user_with_grant(db: AsyncSession,email: str) -> List[user_schem
     # print(result.all())
     return result.first()
 
+async def select_users(db:AsyncSession, email:str) -> List[user_schema.TakingUsersResponse]:
+    result: Result = await(
+        db.execute(
+            select(
+                user_model.User.id,
+                user_model.User.username,
+                user_model.User.email,
+                user_model.User.user_kind_id
+            )
+        )
+    )
+    return result.all()
 
-async def add_user(db: AsyncSession, username: str, email: str, password: str):
-    hashed_password = get_password_hash(password)
-    new_user = UserCreate(username = username, email = email, hashed_password = hashed_password, created = datetime.now(), is_active = True)
+async def add_user(db: AsyncSession,add_users_request:course_schema.AddUsersRequest) -> course_schema.AddUsersResponse:
+    hashed_password = get_password_hash(add_users_request.password)
+    created = datetime.now()
+    new_user = UserCreate(username = add_users_request.username, email = add_users_request.email, created = created, is_active = True, hashed_password = hashed_password, user_kind_id = add_users_request.kind_id)
     row = user_model.User(**new_user.dict())
     db.add(row)
     await db.commit()
     await db.refresh(row)
-    return "success"
+    added_users = course_schema.AddedUsers(id=row.id, username=add_users_request.username, email=add_users_request.email, hashed_password=hashed_password, created=created, is_active=True, user_kind_id=add_users_request.kind_id)
+    return {"success":True,"error_msg":"","added_users":added_users}
 
 async def authenticate_user(db: AsyncSession, email: str, password: str):
     user = await get_user(db, email)
@@ -197,3 +213,6 @@ async def get_user_grant(current_user:UserWithGrant = Depends(get_user_with_gran
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
+async def get_taking_users(authed_token=Depends(get_authed_token),db: AsyncSession = Depends(get_db)):
+    taking_users = await select_users(db=db,email=authed_token.email)
+    return taking_users

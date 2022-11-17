@@ -281,7 +281,8 @@ async def select_choice_question(db: AsyncSession, flowpage_id: int) -> flowpage
                 flow_page_model.Blank.id.label("blank_id")
             ).where(flow_page_model.ChoiceQuestion.id == flowpage_id)
             .where(flow_page_model.ChoiceQuestion.content_id == content_model.Content.id)
-            .where(flow_page_model.ChoiceQuestion.id == flow_page_model.Blank.flowpage_id)
+            .where(flow_page_model.ChoiceQuestion.id == flow_page_model.FlowPage.id)
+            #.where(flow_page_model.ChoiceQuestion.id == flow_page_model.Blank.flowpage_id)
         )
     )
 
