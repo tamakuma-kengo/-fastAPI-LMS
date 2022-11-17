@@ -58,6 +58,7 @@ export default {
   }),
   methods:{
       markdownToHtml(md){
+        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
         return marked(md);
       },
       register_answer(){

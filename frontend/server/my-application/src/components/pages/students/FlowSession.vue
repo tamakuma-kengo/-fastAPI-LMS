@@ -55,6 +55,16 @@ export default {
     FlowSessionLocationBar,
   },
   created: function() {
+    window.MathJax.Hub.Config({
+      tex2jax:{
+        extensions: ["tex2jax.js", "TeX/boldsymbol.js"],
+        messageStyle: "none",
+        inlineMath: [['$','$'],['\\(','\\)']],
+        displayMath: [['$$','$$'],['\\[','\\]']],
+        processEscapes: true
+      }
+    })
+    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
     this.get_ids_by_session_id()
     this.get_flow_info()
     this.update_data()
